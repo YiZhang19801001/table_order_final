@@ -65,6 +65,18 @@ export default class App extends Component {
         userId: res.data.userId
       });
     });
+
+    if (localStorage.getItem("aupos_time_stamp")) {
+      const today = new Date();
+      const date = `${today.getFullYear()}${today.getMonth() + 1}${today.getDate()}`;
+      const time = localStorage.getItem("aupos_time_stamp");
+
+      if (time != date) {
+        //console.log('clear');
+        this.clearPreorderShoppingCart();
+      }
+    }
+
   }
 
   updateHistoryCartList(list) {
@@ -238,7 +250,7 @@ export default class App extends Component {
   }
 
   clearPreorderShoppingCart() {
-    localStorage.clear();
+    localStorage.setItem('preorderList', []);
     this.setState({ shoppingCartList: [] });
   }
 
@@ -261,6 +273,9 @@ export default class App extends Component {
     if (mode === "preorder") {
       // console.log(this.state.shoppingCartList);
       localStorage.setItem("preorderList", JSON.stringify(resultArr));
+      const today = new Date();
+      const date = `${today.getFullYear()}${today.getMonth() + 1}${today.getDate()}`;
+      localStorage.setItem("aupos_time_stamp", date);
     } else if (mode === "table" && isCallApi === true) {
       //console.log(this.state.userId);
       Axios.post("/table/public/api/updateorderlist", {

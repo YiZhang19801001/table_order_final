@@ -106,7 +106,7 @@ export default class Confirm extends Component {
         // this.props.updateHistoryCartList(res.data.historyList);
         this.props.history.push(
           `/table/public/complete/${this.props.match.params.tableId}/${
-            this.props.match.params.orderId
+          this.props.match.params.orderId
           }`
         );
       })
@@ -193,7 +193,7 @@ export default class Confirm extends Component {
             </Link>
           </div>
         </div>
-        {this.props.match.params.mode === "table" ? qr_section : null}
+
 
         {this.props.match.params.mode === "table" ? (
           <div className="confirm__footer">

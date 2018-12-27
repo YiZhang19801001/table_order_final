@@ -240,6 +240,30 @@ body {
   border-radius: 3px;
 }
 
+.product-card .img-xl-container {
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  top: 0;
+  left: 0;
+  background: #44444457;
+  z-index: 500;
+}
+
+.product-card .img-xl-container img {
+  width: 80vw;
+  border-radius: 5px;
+}
+
 .product-card .product-info {
   -webkit-box-flex: 1;
       -ms-flex: 1;
