@@ -14060,7 +14060,7 @@ var ProductCard = function (_Component) {
     key: "componentDidMount",
     value: function componentDidMount() {
       this.setState({ btnPlus: "/table/public/images/layout/btn_plus_red.png" });
-
+      console.log(this.kk);
       var flag = this.props.product.choices.length > 0 || this.props.product.options.length > 0;
       var buttonImg = flag ? "/table/public/images/layout/btn_sub_grey.png" : "/table/public/images/layout/btn_sub_red.png";
 
@@ -14113,19 +14113,28 @@ var ProductCard = function (_Component) {
     }
   }, {
     key: "increase",
-    value: function increase() {}
+    value: function increase() {
+      this.props.updateShoppingCartList(true, this.props.product, this.props.appMode, "add", this.props.orderId, this.props.tableNumber);
+    }
   }, {
     key: "decrease",
-    value: function decrease() {}
+    value: function decrease() {
+      this.props.updateShoppingCartList(true, this.props.product, this.props.appMode, "sub", this.props.orderId, this.props.tableNumber);
+    }
   }, {
     key: "render",
     value: function render() {
+      var isSimpleProduct = this.props.product.options.length == 0 && this.props.product.choices.length == 0 ? true : false;
+
       var Control_Pannel = this.state.quantity > 0 ? __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         "div",
         { className: "control-pannel" },
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           "div",
-          { className: "btn-sub" },
+          {
+            onClick: isSimpleProduct ? this.decrease : null,
+            className: "btn-sub"
+          },
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("img", { src: this.state.btnSub, alt: "-" })
         ),
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -14135,7 +14144,10 @@ var ProductCard = function (_Component) {
         ),
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           "div",
-          { onClick: this.makeChoice, className: "btn-plus" },
+          {
+            onClick: isSimpleProduct ? this.increase : this.makeChoice,
+            className: "btn-plus"
+          },
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("img", { src: this.state.btnPlus, alt: "+" })
         )
       ) : __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -14143,7 +14155,10 @@ var ProductCard = function (_Component) {
         { className: "control-pannel" },
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           "div",
-          { onClick: this.makeChoice, className: "btn-plus-only" },
+          {
+            onClick: isSimpleProduct ? this.increase : this.makeChoice,
+            className: "btn-plus-only"
+          },
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("img", { src: this.state.btnPlus, alt: "+" })
         )
       );
@@ -61215,7 +61230,7 @@ var warning = __webpack_require__(1);
 
 var ReactComponentTreeHook;
 
-if (typeof process !== 'undefined' && Object({"NODE_ENV":"development"}) && "development" === 'test') {
+if (typeof process !== 'undefined' && Object({"MIX_APP_LAN":"","MIX_PUSHER_APP_CLUSTER":"ap1","MIX_PUSHER_APP_KEY":"da53128c54079c5c7c40","MIX_SHOW_OPTIONS":"false","NODE_ENV":"development"}) && "development" === 'test') {
   // Temporary hack.
   // Inline requires don't work well with Jest:
   // https://github.com/facebook/react/issues/7240
@@ -63130,7 +63145,7 @@ var warning = __webpack_require__(1);
 
 var ReactComponentTreeHook;
 
-if (typeof process !== 'undefined' && Object({"NODE_ENV":"development"}) && "development" === 'test') {
+if (typeof process !== 'undefined' && Object({"MIX_APP_LAN":"","MIX_PUSHER_APP_CLUSTER":"ap1","MIX_PUSHER_APP_KEY":"da53128c54079c5c7c40","MIX_SHOW_OPTIONS":"false","NODE_ENV":"development"}) && "development" === 'test') {
   // Temporary hack.
   // Inline requires don't work well with Jest:
   // https://github.com/facebook/react/issues/7240
@@ -64190,7 +64205,7 @@ var warning = __webpack_require__(1);
 
 var ReactComponentTreeHook;
 
-if (typeof process !== 'undefined' && Object({"NODE_ENV":"development"}) && "development" === 'test') {
+if (typeof process !== 'undefined' && Object({"MIX_APP_LAN":"","MIX_PUSHER_APP_CLUSTER":"ap1","MIX_PUSHER_APP_KEY":"da53128c54079c5c7c40","MIX_SHOW_OPTIONS":"false","NODE_ENV":"development"}) && "development" === 'test') {
   // Temporary hack.
   // Inline requires don't work well with Jest:
   // https://github.com/facebook/react/issues/7240
@@ -64397,7 +64412,7 @@ var warning = __webpack_require__(1);
 
 var ReactComponentTreeHook;
 
-if (typeof process !== 'undefined' && Object({"NODE_ENV":"development"}) && "development" === 'test') {
+if (typeof process !== 'undefined' && Object({"MIX_APP_LAN":"","MIX_PUSHER_APP_CLUSTER":"ap1","MIX_PUSHER_APP_KEY":"da53128c54079c5c7c40","MIX_SHOW_OPTIONS":"false","NODE_ENV":"development"}) && "development" === 'test') {
   // Temporary hack.
   // Inline requires don't work well with Jest:
   // https://github.com/facebook/react/issues/7240
