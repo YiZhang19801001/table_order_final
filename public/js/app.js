@@ -8331,7 +8331,6 @@ var OrderItemCard = function (_Component) {
             this.state.orderItem.item.name
           ),
           this.state.orderItem.item.choices.map(function (choice, index) {
-            var pickedChoiceInfo = choice.pickedChoice !== null ? JSON.parse(choice.pickedChoice) : null;
             return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               "div",
               {
@@ -8343,20 +8342,23 @@ var OrderItemCard = function (_Component) {
                 { className: "order-item-card__choices__type" },
                 choice.type
               ),
-              pickedChoiceInfo !== null ? choice.pickedChoice.map(function (pickedchoice) {
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              choice.pickedChoice !== null ? choice.pickedChoice.map(function (pickedchoice, index) {
+                return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                   "div",
-                  { className: "order-item-card__choices__pickedChoice" },
+                  {
+                    key: "decodePickedChoice" + index,
+                    className: "order-item-card__choices__pickedChoice"
+                  },
                   __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     "span",
                     { className: "order-item-card__choices__pickedChoice-name" },
-                    pickedchoice.name
+                    JSON.parse(pickedchoice).name
                   ),
                   __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     "span",
                     { className: "order-item-card__choices__pickedChoice-price" },
                     "$",
-                    pickedchoice.price
+                    JSON.parse(pickedchoice).price
                   )
                 );
               }) : null
@@ -60729,7 +60731,7 @@ var warning = __webpack_require__(1);
 
 var ReactComponentTreeHook;
 
-if (typeof process !== 'undefined' && Object({"MIX_APP_LAN":"1","MIX_PUSHER_APP_CLUSTER":"ap1","MIX_PUSHER_APP_KEY":"da53128c54079c5c7c40","MIX_SHOW_OPTIONS":"false","NODE_ENV":"development"}) && "development" === 'test') {
+if (typeof process !== 'undefined' && Object({"MIX_APP_LAN":"","MIX_PUSHER_APP_CLUSTER":"ap1","MIX_PUSHER_APP_KEY":"da53128c54079c5c7c40","MIX_SHOW_OPTIONS":"false","NODE_ENV":"development"}) && "development" === 'test') {
   // Temporary hack.
   // Inline requires don't work well with Jest:
   // https://github.com/facebook/react/issues/7240
@@ -62644,7 +62646,7 @@ var warning = __webpack_require__(1);
 
 var ReactComponentTreeHook;
 
-if (typeof process !== 'undefined' && Object({"MIX_APP_LAN":"1","MIX_PUSHER_APP_CLUSTER":"ap1","MIX_PUSHER_APP_KEY":"da53128c54079c5c7c40","MIX_SHOW_OPTIONS":"false","NODE_ENV":"development"}) && "development" === 'test') {
+if (typeof process !== 'undefined' && Object({"MIX_APP_LAN":"","MIX_PUSHER_APP_CLUSTER":"ap1","MIX_PUSHER_APP_KEY":"da53128c54079c5c7c40","MIX_SHOW_OPTIONS":"false","NODE_ENV":"development"}) && "development" === 'test') {
   // Temporary hack.
   // Inline requires don't work well with Jest:
   // https://github.com/facebook/react/issues/7240
@@ -63704,7 +63706,7 @@ var warning = __webpack_require__(1);
 
 var ReactComponentTreeHook;
 
-if (typeof process !== 'undefined' && Object({"MIX_APP_LAN":"1","MIX_PUSHER_APP_CLUSTER":"ap1","MIX_PUSHER_APP_KEY":"da53128c54079c5c7c40","MIX_SHOW_OPTIONS":"false","NODE_ENV":"development"}) && "development" === 'test') {
+if (typeof process !== 'undefined' && Object({"MIX_APP_LAN":"","MIX_PUSHER_APP_CLUSTER":"ap1","MIX_PUSHER_APP_KEY":"da53128c54079c5c7c40","MIX_SHOW_OPTIONS":"false","NODE_ENV":"development"}) && "development" === 'test') {
   // Temporary hack.
   // Inline requires don't work well with Jest:
   // https://github.com/facebook/react/issues/7240
@@ -63911,7 +63913,7 @@ var warning = __webpack_require__(1);
 
 var ReactComponentTreeHook;
 
-if (typeof process !== 'undefined' && Object({"MIX_APP_LAN":"1","MIX_PUSHER_APP_CLUSTER":"ap1","MIX_PUSHER_APP_KEY":"da53128c54079c5c7c40","MIX_SHOW_OPTIONS":"false","NODE_ENV":"development"}) && "development" === 'test') {
+if (typeof process !== 'undefined' && Object({"MIX_APP_LAN":"","MIX_PUSHER_APP_CLUSTER":"ap1","MIX_PUSHER_APP_KEY":"da53128c54079c5c7c40","MIX_SHOW_OPTIONS":"false","NODE_ENV":"development"}) && "development" === 'test') {
   // Temporary hack.
   // Inline requires don't work well with Jest:
   // https://github.com/facebook/react/issues/7240
@@ -71013,6 +71015,11 @@ var ChoiceForm = function (_Component) {
       this.setState({
         product: this.props.product
       });
+    }
+  }, {
+    key: "componentWillReceiveProps",
+    value: function componentWillReceiveProps(newProps) {
+      this.setState({ product: newProps.product });
     }
 
     /**

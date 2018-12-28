@@ -23,6 +23,10 @@ export default class ChoiceForm extends Component {
     });
   }
 
+  componentWillReceiveProps(newProps) {
+    this.setState({ product: newProps.product });
+  }
+
   /**
    * call the function in app.js to update details of shopping cart item list
    *
