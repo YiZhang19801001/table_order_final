@@ -403,6 +403,7 @@ class OrderController extends Controller
         //create record in oc_order_product
         $this->createOrderProductHelper($request->orderList, $order_id);
 
+        
         //create record in oc_table_linksub
         $this->createOrderLinkSubHelper($new_order, $request->v);
 
@@ -597,18 +598,23 @@ class OrderController extends Controller
             if (config('app.show_options')) {
                 /**picked choices */
                 foreach ($order_product["item"]["choices"] as $choice) {
-                    $new_order_ext = new OrderExt;
+                    
                     if($choice["pickedChoice"]!==null)
                     {
-                       
+                    
                         foreach ($choice["pickedChoice"] as $pickedChoice) {
                             $pkc = json_decode($pickedChoice);
+                            $new_order_ext = new OrderExt;
+
                             $new_order_ext->product_ext_id = $pkc->product_ext_id;
                             $new_order_ext->order_product_id = $new_order_product->id;
                             $new_order_ext->product_id = $order_product["item"]["product_id"];
                             $new_order_ext->save();
+                            
                         }
+                       
                     }
+                
                     // else
                     // {
                     //     $new_order_ext->product_ext_id = 9999;
