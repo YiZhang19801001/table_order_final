@@ -24,7 +24,7 @@ export default class ProductCard extends Component {
 
   componentDidMount() {
     this.setState({ btnPlus: "/table/public/images/layout/btn_plus_red.png" });
-    console.log(this.kk);
+
     const flag =
       this.props.product.choices.length > 0 ||
       this.props.product.options.length > 0;
@@ -77,57 +77,24 @@ export default class ProductCard extends Component {
   changePicSize() {
     this.setState({ isZoomInPic: !this.state.isZoomInPic });
   }
-  increase() {
-    this.props.updateShoppingCartList(
-      true,
-      this.props.product,
-      this.props.appMode,
-      "add",
-      this.props.orderId,
-      this.props.tableNumber
-    );
-  }
+  increase() {}
+  decrease() {}
 
-  decrease() {
-    this.props.updateShoppingCartList(
-      true,
-      this.props.product,
-      this.props.appMode,
-      "sub",
-      this.props.orderId,
-      this.props.tableNumber
-    );
-  }
   render() {
-    const isSimpleProduct =
-      this.props.product.options.length == 0 &&
-      this.props.product.choices.length == 0
-        ? true
-        : false;
-
     const Control_Pannel =
       this.state.quantity > 0 ? (
         <div className="control-pannel">
-          <div
-            onClick={isSimpleProduct ? this.decrease : null}
-            className="btn-sub"
-          >
+          <div className="btn-sub">
             <img src={this.state.btnSub} alt="-" />
           </div>
           <span className="number-quantity">{this.state.quantity}</span>
-          <div
-            onClick={isSimpleProduct ? this.increase : this.makeChoice}
-            className="btn-plus"
-          >
+          <div onClick={this.makeChoice} className="btn-plus">
             <img src={this.state.btnPlus} alt="+" />
           </div>
         </div>
       ) : (
         <div className="control-pannel">
-          <div
-            onClick={isSimpleProduct ? this.increase : this.makeChoice}
-            className="btn-plus-only"
-          >
+          <div onClick={this.makeChoice} className="btn-plus-only">
             <img src={this.state.btnPlus} alt="+" />
           </div>
         </div>

@@ -10,7 +10,7 @@ export default class ChoiceForm extends Component {
       pickedChoice: "",
       pickedOption: "",
       product: { choices: [] },
-      pickedChoice: ""
+      pickedChoice: []
     };
 
     this.updateShoppingCartList = this.updateShoppingCartList.bind(this);
@@ -52,14 +52,21 @@ export default class ChoiceForm extends Component {
 
   /**
    * set picked choice for saving as order item
-   *
-   * @param {int} index
+   * @param {string} pickedChoice
+   * @param {boolean} action
    */
-  updateOrderItemChoice(pickedChoice, index) {
-    //this.state.product.choices[index].pickedChoice = pickedChoice;
-    this.setState({ pickedChoice });
-    // const newStateProduct = this.state.product;
-    // this.setState({ product: newStateProduct });
+  updateOrderItemChoice(pickedChoice, action) {
+    if (action) {
+      this.setState({
+        pickedChoice: [...this.state.pickedChoice, pickedChoice]
+      });
+    } else {
+      this.setState({
+        pickedChoice: this.state.pickedChoice.filter(
+          choice => choice !== pickedChoice
+        )
+      });
+    }
   }
 
   render() {

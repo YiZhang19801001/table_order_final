@@ -8,7 +8,7 @@ export default class ChoiceGroup extends Component {
   }
 
   setChoice(e) {
-    this.props.updateOrderItemChoice(e.target.value, this.props.index);
+    this.props.updateOrderItemChoice(e.target.value, e.target.checked);
   }
 
   render() {
@@ -28,7 +28,7 @@ export default class ChoiceGroup extends Component {
               >
                 <label className="choice-group__content-container">
                   <input
-                    type="radio"
+                    type="checkbox"
                     name={this.props.choiceGroup.type}
                     value={JSON.stringify(choice)}
                     onChange={this.setChoice}

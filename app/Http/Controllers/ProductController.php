@@ -11,6 +11,7 @@ use App\ProductDescription;
 use App\ProductExt;
 use App\ProductOptionValue;
 use App\ProductToCategory;
+use App\Category;
 
 class ProductController extends Controller
 {
@@ -40,11 +41,16 @@ class ProductController extends Controller
             if ($category_in_db == null) {
                 $category_in_db = CategoryDescription::where('category_id', $category_id->category_id)->first();
             }
+			
+			if(Category::where('category_id',$category_id->category_id)->select('status')->first()->status==1)
+			{
+				$category["category_id"] = $category_in_db->category_id;
+				$category["name"] = $category_in_db->name;
 
-            $category["category_id"] = $category_in_db->category_id;
-            $category["name"] = $category_in_db->name;
+				array_push($categories, $category);
+			}
 
-            array_push($categories, $category);
+            
         }
 
         //declare an array to store the new [product_list(group by category)]
@@ -69,7 +75,7 @@ class ProductController extends Controller
                 /** create price value*/
                 //fetch price first
                 $p = Product::where('product_id', $id->product_id)->first();
-                $price = $p->price;
+                $price = $p["price"];
                 //cut after 2 digts decimal point, i.e 1.0000000 -> 1.00
                 $posOfdecimal = strpos($price, ".");
                 $length = $posOfdecimal + 3;
@@ -77,7 +83,7 @@ class ProductController extends Controller
                 /** end of create price value */
 
                 //create product code value
-                $upc = $p->upc;
+                $upc = $p['upc'];
 
                 //map values to product
                 $new_product["product_id"] = $target_product->product_id;
@@ -86,15 +92,15 @@ class ProductController extends Controller
                 $new_product["upc"] = $upc;
                 $new_product["description"] = $target_product->description;
 
-                $image_path = '/table/public/images/items/' . $p->image;
+                $image_path = '/table/public/images/items/' . $p["image"];
                 $new_product["image"] = "";
-                if ($p->image === null || !file_exists($_SERVER['DOCUMENT_ROOT'] . $image_path)) {
+                if ($p["image"] === null || !file_exists($_SERVER['DOCUMENT_ROOT'] . $image_path)) {
                     $new_product["image"] = 'default_product.jpg';
                     // $new_product["image"] = '24.jpg';
 
                 } else {
 
-                    $new_product["image"] = $p->image;
+                    $new_product["image"] = $p["image"];
                 }
 
                 //details only needed for show options mode

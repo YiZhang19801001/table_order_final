@@ -68,7 +68,8 @@ export default class App extends Component {
 
     if (localStorage.getItem("aupos_time_stamp")) {
       const today = new Date();
-      const date = `${today.getFullYear()}${today.getMonth() + 1}${today.getDate()}`;
+      const date = `${today.getFullYear()}${today.getMonth() +
+        1}${today.getDate()}`;
       const time = localStorage.getItem("aupos_time_stamp");
 
       if (time != date) {
@@ -76,7 +77,6 @@ export default class App extends Component {
         this.clearPreorderShoppingCart();
       }
     }
-
   }
 
   updateHistoryCartList(list) {
@@ -250,7 +250,7 @@ export default class App extends Component {
   }
 
   clearPreorderShoppingCart() {
-    localStorage.setItem('preorderList', []);
+    localStorage.setItem("preorderList", []);
     this.setState({ shoppingCartList: [] });
   }
 
@@ -274,7 +274,8 @@ export default class App extends Component {
       // console.log(this.state.shoppingCartList);
       localStorage.setItem("preorderList", JSON.stringify(resultArr));
       const today = new Date();
-      const date = `${today.getFullYear()}${today.getMonth() + 1}${today.getDate()}`;
+      const date = `${today.getFullYear()}${today.getMonth() +
+        1}${today.getDate()}`;
       localStorage.setItem("aupos_time_stamp", date);
     } else if (mode === "table" && isCallApi === true) {
       //console.log(this.state.userId);
@@ -376,11 +377,11 @@ export default class App extends Component {
               />
             )}
           />
-          <Route exact path="/table/public/mysql" render={props => (
-            <MySql
-              {...props}
-            />
-          )} />
+          <Route
+            exact
+            path="/table/public/mysql"
+            render={props => <MySql {...props} />}
+          />
           <Route
             exact
             path="/table/public/menu/:message"
