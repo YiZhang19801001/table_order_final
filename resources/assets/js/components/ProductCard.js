@@ -23,7 +23,9 @@ export default class ProductCard extends Component {
   }
 
   componentDidMount() {
-    this.setState({ btnPlus: "/table/public/images/layout/btn_plus_red.png" });
+    this.setState({
+      btnPlus: "/table/public/images/layout/btn_plus_red.png"
+    });
 
     const flag =
       this.props.product.choices.length > 0 ||
@@ -75,26 +77,61 @@ export default class ProductCard extends Component {
     this.setState({ toggleChoiceForm: false });
   }
   changePicSize() {
-    this.setState({ isZoomInPic: !this.state.isZoomInPic });
+    this.setState({
+      isZoomInPic: !this.state.isZoomInPic
+    });
   }
-  increase() {}
-  decrease() {}
+  increase() {
+    this.props.updateShoppingCartList(
+      true,
+      this.props.product,
+      this.props.mode,
+      "add",
+      this.props.orderId,
+      this.props.tableNumber
+    );
+  }
 
+  decrease() {
+    this.props.updateShoppingCartList(
+      true,
+      this.props.product,
+      this.props.mode,
+      "sub",
+      this.props.orderId,
+      this.props.tableNumber
+    );
+  }
   render() {
+    const isSimpleProduct =
+      this.props.product.options.length == 0 &&
+      this.props.product.choices.length == 0
+        ? true
+        : false;
+
     const Control_Pannel =
       this.state.quantity > 0 ? (
         <div className="control-pannel">
-          <div className="btn-sub">
+          <div
+            onClick={isSimpleProduct ? this.decrease : null}
+            className="btn-sub"
+          >
             <img src={this.state.btnSub} alt="-" />
           </div>
           <span className="number-quantity">{this.state.quantity}</span>
-          <div onClick={this.makeChoice} className="btn-plus">
+          <div
+            onClick={isSimpleProduct ? this.increase : this.makeChoice}
+            className="btn-plus"
+          >
             <img src={this.state.btnPlus} alt="+" />
           </div>
         </div>
       ) : (
         <div className="control-pannel">
-          <div onClick={this.makeChoice} className="btn-plus-only">
+          <div
+            onClick={isSimpleProduct ? this.increase : this.makeChoice}
+            className="btn-plus-only"
+          >
             <img src={this.state.btnPlus} alt="+" />
           </div>
         </div>

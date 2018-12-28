@@ -50,6 +50,7 @@ export default class Order extends Component {
 
       const pathQuery = queryString.parse(this.props.location.search);
       this.props.setV(pathQuery.v);
+      this.props.setCdt(pathQuery.cdt);
     }
 
     for (let index = 0; index < this.state.categoryList.length; index++) {
@@ -82,8 +83,8 @@ export default class Order extends Component {
             this.props.mode === "preorder"
               ? this.props.app_conf.preorder_title
               : `${this.props.app_conf.app_header_title} ${
-              this.props.match.params.table
-              }`
+                  this.props.match.params.table
+                }`
           }
           btnLabel={
             localStorage.getItem("aupos_language_code") === "1"
@@ -92,7 +93,7 @@ export default class Order extends Component {
           }
           originPath={`${this.props.location.pathname}${
             this.props.location.search
-            }`}
+          }`}
         />
         <div className="main">
           <div className="category-list">

@@ -35,7 +35,8 @@ export default class App extends Component {
       orderId: "",
       userId: "",
       originPath: "",
-      v: ""
+      v: "",
+      cdt: ""
     };
 
     this.updateShoppingCartList = this.updateShoppingCartList.bind(this);
@@ -47,6 +48,7 @@ export default class App extends Component {
     this.updateOrderList = this.updateOrderList.bind(this);
     this.setOriginPath = this.setOriginPath.bind(this);
     this.setV = this.setV.bind(this);
+    this.setCdt = this.setCdt.bind(this);
     this.updateHistoryCartList = this.updateHistoryCartList.bind(this);
     this.clearPreorderShoppingCart = this.clearPreorderShoppingCart.bind(this);
   }
@@ -73,7 +75,6 @@ export default class App extends Component {
       const time = localStorage.getItem("aupos_time_stamp");
 
       if (time != date) {
-        //console.log('clear');
         this.clearPreorderShoppingCart();
       }
     }
@@ -91,7 +92,6 @@ export default class App extends Component {
    *
    */
   updateOrderList(orderList) {
-    //console.log("app.js/updateOrderList has been called", orderList);
     this.setState({ shoppingCartList: orderList });
   }
 
@@ -103,11 +103,6 @@ export default class App extends Component {
    * @param {product} item
    */
   updateShoppingCartList(isCallApi, item, mode, action, orderId, tableId) {
-    // console.log("update order list in preorder mode", item);
-    // console.log("state.shoppingcartlist: ", this.state.shoppingCartList);
-    // console.log("mode", mode);
-    // console.log("action", action);
-    // console.log("orderItem", item);
     let resultArr = [];
     if (action === "add") {
       let flag = false;
@@ -149,80 +144,12 @@ export default class App extends Component {
       tableId,
       resultArr
     );
-    /*
-    for (let i = 0; i < this.state.shoppingCartList.length; i++) {
-      if (this.state.shoppingCartList[i].item.product_id === item.product_id) {
-        flag = true;
-        if (this.state.shoppingCartList[i].item.options.length > 0) {
-          for (
-            let a = 0;
-            a < this.state.shoppingCartList[i].item.options.length;
-            a++
-          ) {
-            const option = this.state.shoppingCartList[i].item.options[a];
-            const new_option = item.options[a];
-            if (option.pickedOption !== new_option) {
-              flag = false;
-              break;
-            }
-          }
-        }
-
-        if (
-          flag === false ||
-          this.state.shoppingCartList[i].item.choices.length < 1
-        ) {
-          break;
-        } else {
-          for (
-            let b = 0;
-            b < this.state.shoppingCartList[i].item.choices.length;
-            b++
-          ) {
-            const choice = this.state.shoppingCartList[i].item.choices[b];
-            const new_choice = item.choices[b];
-            if (choice.pickedChoice !== new_choice.pickedChoice) {
-              flag = false;
-              break;
-            }
-          }
-        }
-      }
-      if (flag) {
-        if (action == "add") {
-          this.state.shoppingCartList[i].quantity++;
-        } else if (action == "sub") {
-          if (this.state.shoppingCartList[i].quantity > 1) {
-            this.state.shoppingCartList[i].quantity--;
-          } else {
-            this.state.shoppingCartList.splice(i, 1);
-          }
-        }
-
-        this.refreshStateShoppingCartList(
-          isCallApi,
-          mode,
-          action,
-          item,
-          orderId,
-          tableId
-        );
-
-        break;
-      }
-    }
-    // if product_id not exist add new
-    if (!flag && action === "add") {
-      this.state.shoppingCartList.push({
-        item: item,
-        quantity: 1
-      });
-
-   }
-    */
   }
   setV(v) {
-    this.setState({ v: v });
+    this.setState({ v });
+  }
+  setCdt(cdt) {
+    this.setState({ cdt });
   }
   /**
    * incease quantity of an order item in the shopping cart
@@ -266,19 +193,13 @@ export default class App extends Component {
     tableId,
     resultArr
   ) {
-    // console.log("refresh is call api: ", isCallApi);
-    // console.log("refresh mode: ", mode);
-    // console.log("refresh item: ", item);
-    // console.log("refresh order id: ", orderId);
     if (mode === "preorder") {
-      // console.log(this.state.shoppingCartList);
       localStorage.setItem("preorderList", JSON.stringify(resultArr));
       const today = new Date();
       const date = `${today.getFullYear()}${today.getMonth() +
         1}${today.getDate()}`;
       localStorage.setItem("aupos_time_stamp", date);
     } else if (mode === "table" && isCallApi === true) {
-      //console.log(this.state.userId);
       Axios.post("/table/public/api/updateorderlist", {
         action: action,
         orderItem: item,
@@ -329,6 +250,7 @@ export default class App extends Component {
                 setOriginPath={this.setOriginPath}
                 lang={this.state.lang}
                 setV={this.setV}
+                setCdt={this.setCdt}
                 updateHistoryCartList={this.updateHistoryCartList}
                 historyCartList={this.state.historyCartList}
                 clearPreorderShoppingCart={this.clearPreorderShoppingCart}
@@ -373,6 +295,13 @@ export default class App extends Component {
                 mode={"table"}
                 originPath={this.state.originPath}
                 historyCartList={this.state.historyCartList}
+                userId={this.state.userId}
+                lang={this.state.lang}
+                v={this.state.v}
+                userId={this.state.userId}
+                orderId={this.state.orderId}
+                cdt={this.state.cdt}
+                tableNumber={this.state.tableId}
                 {...props}
               />
             )}

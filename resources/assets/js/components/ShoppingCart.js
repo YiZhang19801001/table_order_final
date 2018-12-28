@@ -232,6 +232,12 @@ export default class ShoppingCart extends Component {
           >
             {this.props.app_conf.clear_localStorage}
           </div>
+          <Link
+            to={`/table/public/confirm/${this.props.mode}`}
+            className="order-item-card__confirm-button"
+          >
+            {this.props.app_conf.confirm_order}
+          </Link>
         </div>
       ) : (
         <div className="order-item-card__confirm-button-container">
@@ -248,29 +254,6 @@ export default class ShoppingCart extends Component {
 
     return (
       <div>
-        {this.state.isShowConfirm ? (
-          <div className="confirm-modal">
-            <div className="order-confirm-dialog">
-              <div className="order-confirm-icon">
-                <img src="/table/public/images/layout/error.png" alt="" />
-                <span className="order-confirm-title">
-                  Order will be Submit!
-                </span>
-              </div>
-              <div className="order-confirm-message">
-                {`Are you sure to submit this order!`}
-              </div>
-              <div className="button-pannel">
-                <div className="cancel-button">
-                  {this.props.app_conf.continue_order}
-                </div>
-                <div className="confirm-button">
-                  {this.props.app_conf.confirm_order}
-                </div>
-              </div>
-            </div>
-          </div>
-        ) : null}
         {this.state.expand ? (
           <div onClick={this.closeOrderList} className="shopping-cart__cover" />
         ) : null}
@@ -295,9 +278,17 @@ export default class ShoppingCart extends Component {
           </div>
 
           {this.state.expand ? Order_List : null}
-          {/* {this.state.expand ? Order_Confirm : null} */}
+
           {this.state.expand ? (
             <div className="order-item-card__confirm-button-container">
+              {this.props.mode === "preorder" ? (
+                <div
+                  className="order-item__clear-button"
+                  onClick={this.clearPreorderShoppingCart}
+                >
+                  {this.props.app_conf.clear_localStorage}
+                </div>
+              ) : null}
               <Link
                 to={
                   this.props.mode === "preorder"

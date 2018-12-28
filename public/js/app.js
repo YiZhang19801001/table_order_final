@@ -13889,6 +13889,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -13938,7 +13940,8 @@ var App = function (_Component) {
       orderId: "",
       userId: "",
       originPath: "",
-      v: ""
+      v: "",
+      cdt: ""
     };
 
     _this.updateShoppingCartList = _this.updateShoppingCartList.bind(_this);
@@ -13948,6 +13951,7 @@ var App = function (_Component) {
     _this.updateOrderList = _this.updateOrderList.bind(_this);
     _this.setOriginPath = _this.setOriginPath.bind(_this);
     _this.setV = _this.setV.bind(_this);
+    _this.setCdt = _this.setCdt.bind(_this);
     _this.updateHistoryCartList = _this.updateHistoryCartList.bind(_this);
     _this.clearPreorderShoppingCart = _this.clearPreorderShoppingCart.bind(_this);
     return _this;
@@ -13978,7 +13982,6 @@ var App = function (_Component) {
         var time = localStorage.getItem("aupos_time_stamp");
 
         if (time != date) {
-          //console.log('clear');
           this.clearPreorderShoppingCart();
         }
       }
@@ -14002,7 +14005,6 @@ var App = function (_Component) {
   }, {
     key: "updateOrderList",
     value: function updateOrderList(orderList) {
-      //console.log("app.js/updateOrderList has been called", orderList);
       this.setState({ shoppingCartList: orderList });
     }
 
@@ -14017,11 +14019,6 @@ var App = function (_Component) {
   }, {
     key: "updateShoppingCartList",
     value: function updateShoppingCartList(isCallApi, item, mode, action, orderId, tableId) {
-      // console.log("update order list in preorder mode", item);
-      // console.log("state.shoppingcartlist: ", this.state.shoppingCartList);
-      // console.log("mode", mode);
-      // console.log("action", action);
-      // console.log("orderItem", item);
       var resultArr = [];
       if (action === "add") {
         var flag = false;
@@ -14054,78 +14051,16 @@ var App = function (_Component) {
       this.setState({ shoppingCartList: resultArr });
 
       this.refreshStateShoppingCartList(isCallApi, mode, action, item, orderId, tableId, resultArr);
-      /*
-      for (let i = 0; i < this.state.shoppingCartList.length; i++) {
-        if (this.state.shoppingCartList[i].item.product_id === item.product_id) {
-          flag = true;
-          if (this.state.shoppingCartList[i].item.options.length > 0) {
-            for (
-              let a = 0;
-              a < this.state.shoppingCartList[i].item.options.length;
-              a++
-            ) {
-              const option = this.state.shoppingCartList[i].item.options[a];
-              const new_option = item.options[a];
-              if (option.pickedOption !== new_option) {
-                flag = false;
-                break;
-              }
-            }
-          }
-            if (
-            flag === false ||
-            this.state.shoppingCartList[i].item.choices.length < 1
-          ) {
-            break;
-          } else {
-            for (
-              let b = 0;
-              b < this.state.shoppingCartList[i].item.choices.length;
-              b++
-            ) {
-              const choice = this.state.shoppingCartList[i].item.choices[b];
-              const new_choice = item.choices[b];
-              if (choice.pickedChoice !== new_choice.pickedChoice) {
-                flag = false;
-                break;
-              }
-            }
-          }
-        }
-        if (flag) {
-          if (action == "add") {
-            this.state.shoppingCartList[i].quantity++;
-          } else if (action == "sub") {
-            if (this.state.shoppingCartList[i].quantity > 1) {
-              this.state.shoppingCartList[i].quantity--;
-            } else {
-              this.state.shoppingCartList.splice(i, 1);
-            }
-          }
-            this.refreshStateShoppingCartList(
-            isCallApi,
-            mode,
-            action,
-            item,
-            orderId,
-            tableId
-          );
-            break;
-        }
-      }
-      // if product_id not exist add new
-      if (!flag && action === "add") {
-        this.state.shoppingCartList.push({
-          item: item,
-          quantity: 1
-        });
-       }
-      */
     }
   }, {
     key: "setV",
     value: function setV(v) {
       this.setState({ v: v });
+    }
+  }, {
+    key: "setCdt",
+    value: function setCdt(cdt) {
+      this.setState({ cdt: cdt });
     }
     /**
      * incease quantity of an order item in the shopping cart
@@ -14171,18 +14106,12 @@ var App = function (_Component) {
   }, {
     key: "refreshStateShoppingCartList",
     value: function refreshStateShoppingCartList(isCallApi, mode, action, item, orderId, tableId, resultArr) {
-      // console.log("refresh is call api: ", isCallApi);
-      // console.log("refresh mode: ", mode);
-      // console.log("refresh item: ", item);
-      // console.log("refresh order id: ", orderId);
       if (mode === "preorder") {
-        // console.log(this.state.shoppingCartList);
         localStorage.setItem("preorderList", JSON.stringify(resultArr));
         var today = new Date();
         var date = "" + today.getFullYear() + (today.getMonth() + 1) + today.getDate();
         localStorage.setItem("aupos_time_stamp", date);
       } else if (mode === "table" && isCallApi === true) {
-        //console.log(this.state.userId);
         __WEBPACK_IMPORTED_MODULE_3_axios___default.a.post("/table/public/api/updateorderlist", {
           action: action,
           orderItem: item,
@@ -14238,6 +14167,7 @@ var App = function (_Component) {
                 setOriginPath: _this3.setOriginPath,
                 lang: _this3.state.lang,
                 setV: _this3.setV,
+                setCdt: _this3.setCdt,
                 updateHistoryCartList: _this3.updateHistoryCartList,
                 historyCartList: _this3.state.historyCartList,
                 clearPreorderShoppingCart: _this3.clearPreorderShoppingCart
@@ -14273,13 +14203,18 @@ var App = function (_Component) {
             exact: true,
             path: "/table/public/complete/:tableId/:orderId",
             render: function render(props) {
-              return __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_7__components_Complete__["a" /* default */], _extends({
+              var _extends2;
+
+              return __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_7__components_Complete__["a" /* default */], _extends((_extends2 = {
                 shoppingCartList: _this3.state.shoppingCartList,
                 app_conf: _this3.state.app_conf,
                 mode: "table",
                 originPath: _this3.state.originPath,
-                historyCartList: _this3.state.historyCartList
-              }, props));
+                historyCartList: _this3.state.historyCartList,
+                userId: _this3.state.userId,
+                lang: _this3.state.lang,
+                v: _this3.state.v
+              }, _defineProperty(_extends2, "userId", _this3.state.userId), _defineProperty(_extends2, "orderId", _this3.state.orderId), _defineProperty(_extends2, "cdt", _this3.state.cdt), _defineProperty(_extends2, "tableNumber", _this3.state.tableId), _extends2), props));
             }
           }),
           __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2_react_router_dom__["c" /* Route */], {
@@ -69168,6 +69103,7 @@ var Order = function (_Component) {
 
         var pathQuery = queryString.parse(this.props.location.search);
         this.props.setV(pathQuery.v);
+        this.props.setCdt(pathQuery.cdt);
       }
 
       for (var index = 0; index < this.state.categoryList.length; index++) {
@@ -70824,7 +70760,9 @@ var ProductCard = function (_Component) {
   _createClass(ProductCard, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      this.setState({ btnPlus: "/table/public/images/layout/btn_plus_red.png" });
+      this.setState({
+        btnPlus: "/table/public/images/layout/btn_plus_red.png"
+      });
 
       var flag = this.props.product.choices.length > 0 || this.props.product.options.length > 0;
       var buttonImg = flag ? "/table/public/images/layout/btn_sub_grey.png" : "/table/public/images/layout/btn_sub_red.png";
@@ -70874,23 +70812,34 @@ var ProductCard = function (_Component) {
   }, {
     key: "changePicSize",
     value: function changePicSize() {
-      this.setState({ isZoomInPic: !this.state.isZoomInPic });
+      this.setState({
+        isZoomInPic: !this.state.isZoomInPic
+      });
     }
   }, {
     key: "increase",
-    value: function increase() {}
+    value: function increase() {
+      this.props.updateShoppingCartList(true, this.props.product, this.props.mode, "add", this.props.orderId, this.props.tableNumber);
+    }
   }, {
     key: "decrease",
-    value: function decrease() {}
+    value: function decrease() {
+      this.props.updateShoppingCartList(true, this.props.product, this.props.mode, "sub", this.props.orderId, this.props.tableNumber);
+    }
   }, {
     key: "render",
     value: function render() {
+      var isSimpleProduct = this.props.product.options.length == 0 && this.props.product.choices.length == 0 ? true : false;
+
       var Control_Pannel = this.state.quantity > 0 ? __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         "div",
         { className: "control-pannel" },
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           "div",
-          { className: "btn-sub" },
+          {
+            onClick: isSimpleProduct ? this.decrease : null,
+            className: "btn-sub"
+          },
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("img", { src: this.state.btnSub, alt: "-" })
         ),
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -70900,7 +70849,10 @@ var ProductCard = function (_Component) {
         ),
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           "div",
-          { onClick: this.makeChoice, className: "btn-plus" },
+          {
+            onClick: isSimpleProduct ? this.increase : this.makeChoice,
+            className: "btn-plus"
+          },
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("img", { src: this.state.btnPlus, alt: "+" })
         )
       ) : __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -70908,7 +70860,10 @@ var ProductCard = function (_Component) {
         { className: "control-pannel" },
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           "div",
-          { onClick: this.makeChoice, className: "btn-plus-only" },
+          {
+            onClick: isSimpleProduct ? this.increase : this.makeChoice,
+            className: "btn-plus-only"
+          },
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("img", { src: this.state.btnPlus, alt: "+" })
         )
       );
@@ -71514,6 +71469,14 @@ var ShoppingCart = function (_Component) {
             onClick: this.clearPreorderShoppingCart
           },
           this.props.app_conf.clear_localStorage
+        ),
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+          __WEBPACK_IMPORTED_MODULE_1_react_router_dom__["b" /* Link */],
+          {
+            to: "/table/public/confirm/" + this.props.mode,
+            className: "order-item-card__confirm-button"
+          },
+          this.props.app_conf.confirm_order
         )
       ) : __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         "div",
@@ -71533,43 +71496,6 @@ var ShoppingCart = function (_Component) {
       return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         "div",
         null,
-        this.state.isShowConfirm ? __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-          "div",
-          { className: "confirm-modal" },
-          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-            "div",
-            { className: "order-confirm-dialog" },
-            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-              "div",
-              { className: "order-confirm-icon" },
-              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("img", { src: "/table/public/images/layout/error.png", alt: "" }),
-              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                "span",
-                { className: "order-confirm-title" },
-                "Order will be Submit!"
-              )
-            ),
-            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-              "div",
-              { className: "order-confirm-message" },
-              "Are you sure to submit this order!"
-            ),
-            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-              "div",
-              { className: "button-pannel" },
-              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                "div",
-                { className: "cancel-button" },
-                this.props.app_conf.continue_order
-              ),
-              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                "div",
-                { className: "confirm-button" },
-                this.props.app_conf.confirm_order
-              )
-            )
-          )
-        ) : null,
         this.state.expand ? __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("div", { onClick: this.closeOrderList, className: "shopping-cart__cover" }) : null,
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           "div",
@@ -71607,6 +71533,14 @@ var ShoppingCart = function (_Component) {
           this.state.expand ? __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             "div",
             { className: "order-item-card__confirm-button-container" },
+            this.props.mode === "preorder" ? __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              "div",
+              {
+                className: "order-item__clear-button",
+                onClick: this.clearPreorderShoppingCart
+              },
+              this.props.app_conf.clear_localStorage
+            ) : null,
             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               __WEBPACK_IMPORTED_MODULE_1_react_router_dom__["b" /* Link */],
               {
@@ -71666,7 +71600,8 @@ var Confirm = function (_Component) {
       qrString: "",
       shoppingCartList: [],
       orderId: "",
-      tableId: ""
+      tableId: "",
+      isShowConfirm: false
     };
 
     _this.createQrCode = _this.createQrCode.bind(_this);
@@ -71679,7 +71614,8 @@ var Confirm = function (_Component) {
   _createClass(Confirm, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      if (this.props.mode === "preorder") {
+      console.log(this.props);
+      if (this.props.mode === "preorder" && localStorage.getItem("preorderList")) {
         this.setState({
           shoppingCartList: JSON.parse(localStorage.getItem("preorderList"))
         });
@@ -71715,8 +71651,11 @@ var Confirm = function (_Component) {
           qr = qr + el.quantity + ",";
           qr = qr + "0" + ";";
           el.item.choices.forEach(function (choice) {
-            var pickchoiceBarcode = choice.pickedChoice !== null ? JSON.parse(choice.pickedChoice).barcode : "";
-            qr = qr + pickchoiceBarcode + "," + el.quantity + "," + 0 + ";";
+            if (choice.pickedChoice !== null) {
+              choice.pickedChoice.forEach(function (el) {
+                qr = qr + el.barcode + "," + el.quantity + "," + 0 + ";";
+              });
+            }
           });
           el.item.options.forEach(function (option) {
             qr = qr + option.option_name + "," + option.pickedOption + ",";
@@ -71756,7 +71695,10 @@ var Confirm = function (_Component) {
         paymentMethod: "Dive in",
         v: this.props.v
       }).then(function (res) {
-        // this.props.updateHistoryCartList(res.data.historyList);
+        // res example: {"historyList":[{"item":{"product_id":5,"name":"\u9c8d\u9c7c\u571f\u9e21\u9505","price":"14.80","upc":"0105","description":null,"image":"default_product.jpg","choices":[{"type_id":9998,"type":"Option","choices":[{"product_ext_id":5195,"name":"\u8d70\u9c7c\u7247","price":"0.00","barcode":"E15","image":"default_taste.png"},{"product_ext_id":5108,"name":"\u7279\u9ebb","price":"0.00","barcode":"E06","image":"default_taste.png"},{"product_ext_id":5104,"name":"\u52a0\u9ebb","price":"0.00","barcode":"E02","image":"default_taste.png"},{"product_ext_id":5105,"name":"\u7279\u8fa3","price":"0.00","barcode":"E03","image":"default_taste.png"},{"product_ext_id":5194,"name":"\u8d70\u8471","price":"0.00","barcode":"E14","image":"default_taste.png"},{"product_ext_id":5103,"name":"\u52a0\u8fa3","price":"0.00","barcode":"E01","image":"default_taste.png"}],"pickedChoice":["{\"product_ext_id\":5108,\"name\":\"\u7279\u9ebb\",\"price\":\"0.00\",\"barcode\":\"E06\",\"image\":\"default_taste.png\"}","{\"product_ext_id\":5104,\"name\":\"\u52a0\u9ebb\",\"price\":\"0.00\",\"barcode\":\"E02\",\"image\":\"default_taste.png\"}"]}],"options":[]},"quantity":1}]}
+
+        // todo:: set it to app.state
+        _this2.props.updateHistoryCartList(res.data.historyList);
         _this2.props.history.push("/table/public/complete/" + _this2.props.match.params.tableId + "/" + _this2.props.match.params.orderId);
       }).catch(function (err) {
         alert(err.reponse.data);
@@ -71765,7 +71707,8 @@ var Confirm = function (_Component) {
   }, {
     key: "render",
     value: function render() {
-      console.log("confirm state: ", this.state);
+      var _this3 = this;
+
       var qr_section = __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         "div",
         { className: "qrcode-section" },
@@ -71786,9 +71729,52 @@ var Confirm = function (_Component) {
           this.props.match.params.mode === "preorder" ? this.props.app_conf.preorder_qr_tips : this.props.app_conf.tableorder_qr_tips
         )
       );
+
       return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         "div",
         { className: "confirm" },
+        this.state.isShowConfirm ? __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+          "div",
+          { className: "confirm-modal" },
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            "div",
+            { className: "order-confirm-dialog" },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              "div",
+              { className: "order-confirm-icon" },
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("img", { src: "/table/public/images/layout/error.png", alt: "" }),
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                "span",
+                { className: "order-confirm-title" },
+                "Order will be Submit!"
+              )
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              "div",
+              { className: "order-confirm-message" },
+              "Are you sure to submit this order!"
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              "div",
+              { className: "button-pannel" },
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                "div",
+                {
+                  onClick: function onClick() {
+                    _this3.setState({ isShowConfirm: false });
+                  },
+                  className: "cancel-button"
+                },
+                this.props.app_conf.continue_order
+              ),
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                "div",
+                { onClick: this.confirmOrder, className: "confirm-button" },
+                this.props.app_conf.confirm_order
+              )
+            )
+          )
+        ) : null,
         this.props.match.params.mode === "preorder" ? __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           "div",
           { className: "confirm__title" },
@@ -71914,7 +71900,9 @@ var Confirm = function (_Component) {
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             "span",
             {
-              onClick: this.confirmOrder,
+              onClick: function onClick() {
+                _this3.setState({ isShowConfirm: true });
+              },
               className: "confirm__footer__button"
             },
             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(

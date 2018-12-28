@@ -171,7 +171,7 @@ body {
   display: flex;
   justify-content: space-between;
   padding: 10px;
-  
+
   .img-container {
     padding-bottom: 2px;
     border-bottom: 2px solid #fff;
@@ -182,21 +182,21 @@ body {
       border-radius: 3px;
     }
   }
-  .img-xl-container{
+  .img-xl-container {
     position: fixed;
     height: 100vh;
-    width:100vw;
+    width: 100vw;
     display: flex;
     justify-content: center;
     align-items: center;
     top: 0;
     left: 0;
-    background:$cover ;
+    background: $cover;
     z-index: 500;
-    img{
+    img {
       width: 80vw;
-      
-      border-radius:5px; 
+
+      border-radius: 5px;
     }
   }
   .product-info {
@@ -369,7 +369,7 @@ body {
     width: 90%;
     margin: 20px auto;
     .choice-group__content-wrapper {
-      width:33%;
+      width: 33%;
       margin-bottom: 8px;
       .choice-group__content-container {
         margin: 0;
@@ -503,15 +503,15 @@ body {
     height: 10vh;
     width: 100vw;
     display: flex;
-    
+
     align-items: flex-end;
     background-color: #fff;
-    .order-item__clear-button{
+    .order-item__clear-button {
       text-align: center;
       flex: 2;
       height: 35px;
       line-height: 35px;
-      
+
       font-size: 14px;
       font-weight: 600;
       text-decoration: none;
@@ -524,7 +524,7 @@ body {
       flex: 3;
       height: 35px;
       line-height: 35px;
-      
+
       font-size: 14px;
       font-weight: 600;
       text-decoration: none;
@@ -918,42 +918,42 @@ body {
 }
 
 .mysql {
-    height: 100vh;
-    width: 100vw;
-    background-color: gainsboro;
-    padding: 50px;
-    overflow: scroll;
-    .button-wrapper {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      .submit-button {
-        padding: 10px 30px;
-        background-color: $yellow;
-        border-radius: 5px;
-        color: white;
-        font-weight: 600;
-      }
-    }
-    .mysql-field {
-      display: flex;
-      flex-direction: column;
-      height: 15vh;
-      justify-content: space-around;
-      align-items: center;
-      border: 1px solid white;
+  height: 100vh;
+  width: 100vw;
+  background-color: gainsboro;
+  padding: 50px;
+  overflow: scroll;
+  .button-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .submit-button {
+      padding: 10px 30px;
+      background-color: $yellow;
       border-radius: 5px;
-      margin-bottom: 10px;
-      .mysql-field__input {
-        font-size: 16px;
-        width: 99%;
-        height: 30px;
-        line-height: 30px;
-      }
-    } 
-  .result{
-    .result-content{
-      margin-top:10px;
+      color: white;
+      font-weight: 600;
+    }
+  }
+  .mysql-field {
+    display: flex;
+    flex-direction: column;
+    height: 15vh;
+    justify-content: space-around;
+    align-items: center;
+    border: 1px solid white;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    .mysql-field__input {
+      font-size: 16px;
+      width: 99%;
+      height: 30px;
+      line-height: 30px;
+    }
+  }
+  .result {
+    .result-content {
+      margin-top: 10px;
       .result-row {
         width: 100%;
         overflow-wrap: break-word;
@@ -962,6 +962,59 @@ body {
         margin-bottom: 5px;
       }
     }
-    
+  }
+}
+
+.confirm-modal {
+  height: 100vh;
+  width: 100vw;
+  background-color: $cover;
+  z-index: 5000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .order-confirm-dialog {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    .order-confirm-icon {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 15px 0px;
+      .order-confirm-title {
+        padding: 10px 0px;
+      }
+    }
+    .order-confirm-message {
+      width: 90%;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    .button-pannel {
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      padding: 5px 0px;
+      .cancel-button {
+        background-color: $red;
+        padding: 5px 10px;
+        color: white;
+        border-radius: 3px;
+      }
+      .confirm-button {
+        background-color: $yellow;
+        padding: 5px 10px;
+        color: white;
+        border-radius: 3px;
+        text-decoration: none;
+      }
+    }
   }
 }

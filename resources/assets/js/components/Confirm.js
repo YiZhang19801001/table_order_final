@@ -13,7 +13,8 @@ export default class Confirm extends Component {
       qrString: "",
       shoppingCartList: [],
       orderId: "",
-      tableId: ""
+      tableId: "",
+      isShowConfirm: false
     };
 
     this.createQrCode = this.createQrCode.bind(this);
@@ -23,7 +24,11 @@ export default class Confirm extends Component {
   }
 
   componentDidMount() {
-    if (this.props.mode === "preorder") {
+    console.log(this.props);
+    if (
+      this.props.mode === "preorder" &&
+      localStorage.getItem("preorderList")
+    ) {
       this.setState({
         shoppingCartList: JSON.parse(localStorage.getItem("preorderList"))
       });
@@ -59,11 +64,11 @@ export default class Confirm extends Component {
         qr = qr + el.quantity + ",";
         qr = qr + "0" + ";";
         el.item.choices.forEach(choice => {
-          const pickchoiceBarcode =
-            choice.pickedChoice !== null
-              ? JSON.parse(choice.pickedChoice).barcode
-              : "";
-          qr = qr + pickchoiceBarcode + "," + el.quantity + "," + 0 + ";";
+          if (choice.pickedChoice !== null) {
+            choice.pickedChoice.forEach(el => {
+              qr = qr + el.barcode + "," + el.quantity + "," + 0 + ";";
+            });
+          }
         });
         el.item.options.forEach(option => {
           qr = qr + option.option_name + "," + option.pickedOption + ",";
@@ -100,7 +105,10 @@ export default class Confirm extends Component {
       v: this.props.v
     })
       .then(res => {
-        // this.props.updateHistoryCartList(res.data.historyList);
+        // res example: {"historyList":[{"item":{"product_id":5,"name":"\u9c8d\u9c7c\u571f\u9e21\u9505","price":"14.80","upc":"0105","description":null,"image":"default_product.jpg","choices":[{"type_id":9998,"type":"Option","choices":[{"product_ext_id":5195,"name":"\u8d70\u9c7c\u7247","price":"0.00","barcode":"E15","image":"default_taste.png"},{"product_ext_id":5108,"name":"\u7279\u9ebb","price":"0.00","barcode":"E06","image":"default_taste.png"},{"product_ext_id":5104,"name":"\u52a0\u9ebb","price":"0.00","barcode":"E02","image":"default_taste.png"},{"product_ext_id":5105,"name":"\u7279\u8fa3","price":"0.00","barcode":"E03","image":"default_taste.png"},{"product_ext_id":5194,"name":"\u8d70\u8471","price":"0.00","barcode":"E14","image":"default_taste.png"},{"product_ext_id":5103,"name":"\u52a0\u8fa3","price":"0.00","barcode":"E01","image":"default_taste.png"}],"pickedChoice":["{\"product_ext_id\":5108,\"name\":\"\u7279\u9ebb\",\"price\":\"0.00\",\"barcode\":\"E06\",\"image\":\"default_taste.png\"}","{\"product_ext_id\":5104,\"name\":\"\u52a0\u9ebb\",\"price\":\"0.00\",\"barcode\":\"E02\",\"image\":\"default_taste.png\"}"]}],"options":[]},"quantity":1}]}
+
+        // todo:: set it to app.state
+        this.props.updateHistoryCartList(res.data.historyList);
         this.props.history.push(
           `/table/public/complete/${this.props.match.params.tableId}/${
             this.props.match.params.orderId
@@ -113,7 +121,6 @@ export default class Confirm extends Component {
   }
 
   render() {
-    console.log("confirm state: ", this.state);
     const qr_section = (
       <div className="qrcode-section">
         <div className="qrcode-container">
@@ -132,8 +139,37 @@ export default class Confirm extends Component {
         </div>
       </div>
     );
+
     return (
       <div className="confirm">
+        {this.state.isShowConfirm ? (
+          <div className="confirm-modal">
+            <div className="order-confirm-dialog">
+              <div className="order-confirm-icon">
+                <img src="/table/public/images/layout/error.png" alt="" />
+                <span className="order-confirm-title">
+                  Order will be Submit!
+                </span>
+              </div>
+              <div className="order-confirm-message">
+                {`Are you sure to submit this order!`}
+              </div>
+              <div className="button-pannel">
+                <div
+                  onClick={() => {
+                    this.setState({ isShowConfirm: false });
+                  }}
+                  className="cancel-button"
+                >
+                  {this.props.app_conf.continue_order}
+                </div>
+                <div onClick={this.confirmOrder} className="confirm-button">
+                  {this.props.app_conf.confirm_order}
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : null}
         {this.props.match.params.mode === "preorder" ? (
           <div className="confirm__title">
             <img src="/table/public/images/layout/icon_confirm.png" alt="" />
@@ -208,7 +244,9 @@ export default class Confirm extends Component {
               <span className="number">{this.props.match.params.orderId}</span>
             </span>
             <span
-              onClick={this.confirmOrder}
+              onClick={() => {
+                this.setState({ isShowConfirm: true });
+              }}
               className="confirm__footer__button"
             >
               <span>{this.props.app_conf.confirm_order}</span>

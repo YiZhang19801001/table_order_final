@@ -282,25 +282,13 @@ class OrderController extends Controller
 
                 $productOptionList = [];
                 foreach ($pickedOptions as $pickOption) {
-                    /**get optionValues */
-                    /** option_id && product_id can found unique [product_option_value_id] [price] [option_value_id]
-                     * [option_value_name] ->use [option_value_id] find this from [oc_option_value_description]
-                     * [option_value_sort_order] ->use [option_value_id] find this from [oc_option_value]
-                     */
-
-                    //Todo: may need list of options
-                    // $optionValues = array();
-                    // foreach ($variable as $key => $value) {
-                    //     # code...
-                    // }
-
                     array_push($productOptionList, array(
                         "option_id" => $pickOption["option_id"],
                         "option_name" => $pickOption["option_name"],
                         "pickedOption" => $pickOption["pickedOption"],
                         "price" => $pickOption["price"],
                         "product_option_value_id" => $pickOption["product_option_value_id"],
-                        //"option_values"             =>$optionValues
+
                     ));
                 }
                 $new_orderList_ele["item"]["options"] = $productOptionList;
@@ -612,14 +600,14 @@ class OrderController extends Controller
                     $new_order_ext = new OrderExt;
                     if($choice["pickedChoice"]!==null)
                     {
-                        // $pickedChoiceArray = json_decode($choice["pickedChoice"]);
-                        // foreach ($pickedChoiceArray as $pkc) {
-                        // }
-                        $pkc = json_decode($choice["pickedChoice"]);
-                        $new_order_ext->product_ext_id = $pkc->product_ext_id;
-                        $new_order_ext->order_product_id = $new_order_product->id;
-                        $new_order_ext->product_id = $order_product["item"]["product_id"];
-                        $new_order_ext->save();
+                       
+                        foreach ($choice["pickedChoice"] as $pickedChoice) {
+                            $pkc = json_decode($pickedChoice);
+                            $new_order_ext->product_ext_id = $pkc->product_ext_id;
+                            $new_order_ext->order_product_id = $new_order_product->id;
+                            $new_order_ext->product_id = $order_product["item"]["product_id"];
+                            $new_order_ext->save();
+                        }
                     }
                     // else
                     // {
