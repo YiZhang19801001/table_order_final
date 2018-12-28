@@ -77,8 +77,8 @@ export default class ProductCard extends Component {
   changePicSize() {
     this.setState({ isZoomInPic: !this.state.isZoomInPic });
   }
-  increase() { }
-  decrease() { }
+  increase() {}
+  decrease() {}
 
   render() {
     const Control_Pannel =
@@ -93,19 +93,23 @@ export default class ProductCard extends Component {
           </div>
         </div>
       ) : (
-          <div className="control-pannel">
-            <div onClick={this.makeChoice} className="btn-plus-only">
-              <img src={this.state.btnPlus} alt="+" />
-            </div>
+        <div className="control-pannel">
+          <div onClick={this.makeChoice} className="btn-plus-only">
+            <img src={this.state.btnPlus} alt="+" />
           </div>
-        );
+        </div>
+      );
     return (
       <div className="product-card">
-        <div className={this.state.isZoomInPic ? 'img-xl-container' : 'img-container'}>
+        <div
+          onClick={this.changePicSize}
+          className={
+            this.state.isZoomInPic ? "img-xl-container" : "img-container"
+          }
+        >
           <img
             src={`/table/public/images/items/${this.props.product.image}`}
             alt={this.props.product.name}
-            onClick={this.changePicSize}
           />
         </div>
         <div className="product-info">

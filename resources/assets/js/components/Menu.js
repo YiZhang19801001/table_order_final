@@ -1,10 +1,7 @@
 import React, { Component } from "react";
-import Axios from "axios";
-import { Link, Element, Events, animateScroll as scroll } from "react-scroll";
-const queryString = require("query-string");
 
 import Head from "./Head";
-import ProductCard from "./ProductCard";
+
 export default class Menu extends Component {
   constructor(props) {
     super(props);
@@ -17,7 +14,6 @@ export default class Menu extends Component {
     // Axios.get(`/table/public/api/products/1`).then(res => {
     //   this.setState({ productGroupList: res.data.products });
     // });
-
     // Axios.get(`/table/public/api/categories/1`).then(res => {
     //   this.setState({ categoryList: res.data.categories });
     // });

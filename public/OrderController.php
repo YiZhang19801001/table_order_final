@@ -610,47 +610,30 @@ class OrderController extends Controller
                 /**picked choices */
                 foreach ($order_product["item"]["choices"] as $choice) {
                     $new_order_ext = new OrderExt;
-                    if($choice["pickedChoice"]!==null)
-                    {
-                        // $pickedChoiceArray = json_decode($choice["pickedChoice"]);
-                        // foreach ($pickedChoiceArray as $pkc) {
-                        // }
-                        $pkc = json_decode($choice["pickedChoice"]);
-                        $new_order_ext->product_ext_id = $pkc->product_ext_id;
-                        $new_order_ext->order_product_id = $new_order_product->id;
-                        $new_order_ext->product_id = $order_product["item"]["product_id"];
-                        $new_order_ext->save();
-                    }
-                    // else
-                    // {
-                    //     $new_order_ext->product_ext_id = 9999;
+                    $decodeChoice = json_decode($choice["pickedChoice"]);
+                    // $new_order_ext->product_ext_id = $choice["product_ext_id"];
+                    $new_order_ext->product_ext_id = $decodeChoice->product_ext_id;
 
-                    //     $new_order_ext->order_product_id = $new_order_product->id;
-                    //     $new_order_ext->product_id = $order_product["item"]["product_id"];
+                    $new_order_ext->order_product_id = $new_order_product->id;
+                    $new_order_ext->product_id = $order_product["item"]["product_id"];
 
-                    // }
-
-                    
+                    $new_order_ext->save();
                 }
                 /**store picked options in DB*/
-                // if(count($order_product["item"]["options"])>0){
-                //     foreach ($order_product["item"]["options"] as $option) {
-                //         die(json_encode($option));
-                //         $new_order_option = new OrderOption;
-                //         $new_order_option->order_id = $order_id;
-                //         $new_order_option->order_product_id = $new_order_product->id;
+                foreach ($order_product["item"]["options"] as $option) {
+                    $new_order_option = new OrderOption;
+                    $new_order_option->order_id = $order_id;
+                    $new_order_option->order_product_id = $new_order_product->id;
 
-                //         $new_order_option->product_option_id = $option["option_id"];
+                    $new_order_option->product_option_id = $option["option_id"];
 
-                //         $new_order_option->product_option_value_id = $option["product_option_value_id"];
-                //         $new_order_option->name = $option["option_name"];
-                //         $new_order_option->value = $option["pickedOption"];
-                //         $new_order_option->type = "radio";
+                    $new_order_option->product_option_value_id = $option["product_option_value_id"];
+                    $new_order_option->name = $option["option_name"];
+                    $new_order_option->value = $option["pickedOption"];
+                    $new_order_option->type = "radio";
 
-                //         $new_order_option->save();
-                //     }
-
-                // }
+                    $new_order_option->save();
+                }
             }
 
         }

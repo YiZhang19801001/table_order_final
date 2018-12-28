@@ -32,8 +32,8 @@ export default class Confirm extends Component {
     }
   }
 
-  componentWillReceiveProps(newPorps) {
-    if (newPorps.mode === "table") {
+  componentWillReceiveProps(newProps) {
+    if (newProps.mode === "table") {
       this.setState({ shoppingCartList: newProps.shoppingCartList });
     }
   }
@@ -59,14 +59,11 @@ export default class Confirm extends Component {
         qr = qr + el.quantity + ",";
         qr = qr + "0" + ";";
         el.item.choices.forEach(choice => {
-          qr =
-            qr +
-            JSON.parse(choice.pickedChoice).barcode +
-            "," +
-            el.quantity +
-            "," +
-            0 +
-            ";";
+          const pickchoiceBarcode =
+            choice.pickedChoice !== null
+              ? JSON.parse(choice.pickedChoice).barcode
+              : "";
+          qr = qr + pickchoiceBarcode + "," + el.quantity + "," + 0 + ";";
         });
         el.item.options.forEach(option => {
           qr = qr + option.option_name + "," + option.pickedOption + ",";
@@ -106,7 +103,7 @@ export default class Confirm extends Component {
         // this.props.updateHistoryCartList(res.data.historyList);
         this.props.history.push(
           `/table/public/complete/${this.props.match.params.tableId}/${
-          this.props.match.params.orderId
+            this.props.match.params.orderId
           }`
         );
       })
@@ -193,7 +190,6 @@ export default class Confirm extends Component {
             </Link>
           </div>
         </div>
-
 
         {this.props.match.params.mode === "table" ? (
           <div className="confirm__footer">

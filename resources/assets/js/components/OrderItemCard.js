@@ -91,7 +91,10 @@ export default class OrderItemCard extends Component {
             {this.state.orderItem.item.name}
           </span>
           {this.state.orderItem.item.choices.map((choice, index) => {
-            const pickedChoiceInfo = JSON.parse(choice.pickedChoice);
+            const pickedChoiceInfo =
+              choice.pickedChoice !== null
+                ? JSON.parse(choice.pickedChoice)
+                : null;
             return (
               <div
                 className="order-item-card__choices"
@@ -100,14 +103,18 @@ export default class OrderItemCard extends Component {
                 <div className="order-item-card__choices__type">
                   {choice.type}
                 </div>
-                <div className="order-item-card__choices__pickedChoice">
-                  <span className="order-item-card__choices__pickedChoice-name">
-                    {pickedChoiceInfo.name}
-                  </span>
-                  <span className="order-item-card__choices__pickedChoice-price">
-                    ${pickedChoiceInfo.price}
-                  </span>
-                </div>
+                {pickedChoiceInfo !== null
+                  ? choice.pickedChoice.map(pickedchoice => {
+                      <div className="order-item-card__choices__pickedChoice">
+                        <span className="order-item-card__choices__pickedChoice-name">
+                          {pickedchoice.name}
+                        </span>
+                        <span className="order-item-card__choices__pickedChoice-price">
+                          ${pickedchoice.price}
+                        </span>
+                      </div>;
+                    })
+                  : null}
               </div>
             );
           })}

@@ -13,7 +13,8 @@ export default class ShoppingCart extends Component {
       shoppingCartList: [],
       orderShoppingCartList: [],
       historyCartList: [],
-      expand: false
+      expand: false,
+      isShowConfirm: false
     };
 
     this.getOrderTotalPrice = this.getOrderTotalPrice.bind(this);
@@ -71,11 +72,9 @@ export default class ShoppingCart extends Component {
 
       Echo.channel("tableOrder").listen("UpdateOrder", e => {
         if (e.orderId == this.props.orderId && e.userId !== this.props.userId) {
-          if (e.action == 'update') {
+          if (e.action == "update") {
             confirm.log("update after someone confirm order");
-
-          }
-          else {
+          } else {
             this.props.updateShoppingCartList(
               false,
               e.orderItem,
@@ -195,36 +194,83 @@ export default class ShoppingCart extends Component {
           })}
         </div>
       ) : (
-          <div className="shopping-cart__list-container">
-            {this.state.shoppingCartList.map((orderItem, index) => {
-              return (
-                <OrderItemCard
-                  orderItem={orderItem}
-                  appMode={this.props.mode}
-                  orderId={this.props.orderId}
-                  tableNumber={this.props.tableNumber}
-                  updateShoppingCartList={this.props.updateShoppingCartList}
-                  increaseShoppingCartItem={this.props.increaseShoppingCartItem}
-                  decreaseShoppingCartItem={this.props.decreaseShoppingCartItem}
-                  key={`orderItemInShoppingCart${index}`}
-                  mode={1}
-                />
-              );
-            })}
-            {this.state.historyCartList.map((orderItem, index) => {
-              return (
-                <OrderItemCard
-                  app_conf={this.props.app_conf}
-                  orderItem={orderItem}
-                  key={`historyItemInShoppingCart${index}`}
-                  mode={3}
-                />
-              );
-            })}
+        <div className="shopping-cart__list-container">
+          {this.state.shoppingCartList.map((orderItem, index) => {
+            return (
+              <OrderItemCard
+                orderItem={orderItem}
+                appMode={this.props.mode}
+                orderId={this.props.orderId}
+                tableNumber={this.props.tableNumber}
+                updateShoppingCartList={this.props.updateShoppingCartList}
+                increaseShoppingCartItem={this.props.increaseShoppingCartItem}
+                decreaseShoppingCartItem={this.props.decreaseShoppingCartItem}
+                key={`orderItemInShoppingCart${index}`}
+                mode={1}
+              />
+            );
+          })}
+          {this.state.historyCartList.map((orderItem, index) => {
+            return (
+              <OrderItemCard
+                app_conf={this.props.app_conf}
+                orderItem={orderItem}
+                key={`historyItemInShoppingCart${index}`}
+                mode={3}
+              />
+            );
+          })}
+        </div>
+      );
+
+    const Order_Confirm =
+      this.props.mode === "preorder" ? (
+        <div className="order-item-card__confirm-button-container">
+          <div
+            className="order-item__clear-button"
+            onClick={this.clearPreorderShoppingCart}
+          >
+            {this.props.app_conf.clear_localStorage}
           </div>
-        );
+        </div>
+      ) : (
+        <div className="order-item-card__confirm-button-container">
+          <div
+            onClick={() => {
+              this.setState({ isShowConfirm: true });
+            }}
+            className="order-item-card__confirm-button"
+          >
+            {this.props.app_conf.confirm_order}
+          </div>
+        </div>
+      );
+
     return (
       <div>
+        {this.state.isShowConfirm ? (
+          <div className="confirm-modal">
+            <div className="order-confirm-dialog">
+              <div className="order-confirm-icon">
+                <img src="/table/public/images/layout/error.png" alt="" />
+                <span className="order-confirm-title">
+                  Order will be Submit!
+                </span>
+              </div>
+              <div className="order-confirm-message">
+                {`Are you sure to submit this order!`}
+              </div>
+              <div className="button-pannel">
+                <div className="cancel-button">
+                  {this.props.app_conf.continue_order}
+                </div>
+                <div className="confirm-button">
+                  {this.props.app_conf.confirm_order}
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : null}
         {this.state.expand ? (
           <div onClick={this.closeOrderList} className="shopping-cart__cover" />
         ) : null}
@@ -249,18 +295,16 @@ export default class ShoppingCart extends Component {
           </div>
 
           {this.state.expand ? Order_List : null}
+          {/* {this.state.expand ? Order_Confirm : null} */}
           {this.state.expand ? (
             <div className="order-item-card__confirm-button-container">
-              {
-                this.props.mode === "preorder" ? (<div className="order-item__clear-button" onClick={this.clearPreorderShoppingCart}>{this.props.app_conf.clear_localStorage}</div>) : null
-              }
               <Link
                 to={
                   this.props.mode === "preorder"
                     ? `/table/public/confirm/${this.props.mode}`
                     : `/table/public/confirm/${this.props.mode}/${
-                    this.props.tableNumber
-                    }/${this.props.orderId}`
+                        this.props.tableNumber
+                      }/${this.props.orderId}`
                 }
                 className="order-item-card__confirm-button"
               >
