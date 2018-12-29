@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import _ from "lodash";
 
 import ChoiceGroup from "./ChoiceGroup";
 
@@ -67,7 +68,7 @@ export default class ChoiceForm extends Component {
     } else {
       this.setState({
         pickedChoice: this.state.pickedChoice.filter(
-          choice => choice !== pickedChoice
+          choice => !_.isEqual(choice, pickedChoice)
         )
       });
     }

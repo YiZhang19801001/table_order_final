@@ -36,7 +36,8 @@ export default class App extends Component {
       userId: "",
       originPath: "",
       v: "",
-      cdt: ""
+      cdt: "",
+      lang: null
     };
 
     this.updateShoppingCartList = this.updateShoppingCartList.bind(this);
@@ -54,14 +55,15 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    let lang = 1;
     if (localStorage.getItem("aupos_language_code")) {
-      lang = localStorage.getItem("aupos_language_code");
+      this.setState({ lang: localStorage.getItem("aupos_language_code") });
     } else {
       localStorage.setItem("aupos_laguage_code", 1);
     }
 
-    Axios.get(`/table/public/api/init/${lang}`).then(res => {
+    Axios.get(
+      `/table/public/api/init/${localStorage.getItem("aupos_language_code")}`
+    ).then(res => {
       this.setState({
         app_conf: res.data.app_conf,
         userId: res.data.userId
@@ -266,6 +268,7 @@ export default class App extends Component {
                 shoppingCartList={this.state.shoppingCartList}
                 app_conf={this.state.app_conf}
                 mode={"preorder"}
+                lang={this.state.lang}
                 {...props}
               />
             )}
@@ -281,6 +284,7 @@ export default class App extends Component {
                 updateHistoryCartList={this.updateHistoryCartList}
                 originPath={this.state.originPath}
                 v={this.state.v}
+                lang={this.state.lang}
                 {...props}
               />
             )}

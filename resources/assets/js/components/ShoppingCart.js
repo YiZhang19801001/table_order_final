@@ -41,13 +41,10 @@ export default class ShoppingCart extends Component {
 
     if (this.props.mode === "preorder") {
       if (localStorage.getItem("preorderList")) {
-        //console.log("read data from localstorage");
         this.setState({
           shoppingCartList: JSON.parse(localStorage.getItem("preorderList"))
         });
-        console.log(
-          "updateOrderList has been called from ShoppingCart Component"
-        );
+
         this.props.updateOrderList(
           JSON.parse(localStorage.getItem("preorderList"))
         );
@@ -58,7 +55,7 @@ export default class ShoppingCart extends Component {
         cdt: this.props.cdt,
         v: this.props.v,
         table_id: this.props.tableNumber,
-        lang: 1
+        lang: localStorage.getItem("aupos_language_code")
       })
         .then(res => {
           // this.setState({ shoppingCartList: res.data.pending_list });
@@ -84,34 +81,6 @@ export default class ShoppingCart extends Component {
               this.props.tableNumber
             );
           }
-        }
-      });
-
-      Echo.channel("tableOrder").listen("ConfirmOrder", e => {
-        console.log("confirm order event listened");
-
-        if (e.orderId == this.props.orderId) {
-          Axios.post(`/table/public/api/initcart`, {
-            order_id: this.props.orderId,
-            cdt: this.props.cdt,
-            v: this.props.v,
-            table_id: this.props.tableNumber,
-            lang: 1
-          })
-            .then(res => {
-              console.log("call initCart, trigger by broadcast", res);
-              // this.setState({ shoppingCartList: res.data.pending_list });
-              this.props.updateOrderList(res.data.pendingList);
-              this.props.updateHistoryList(res.data.historyList);
-              this.setState({
-                shoppingCartList: res.data.pendingList,
-                historyCartList: res.data.historyList
-              });
-              // this.setState({ orderShoppingCartList: res.data.ordered_list });
-            })
-            .catch(err => {
-              this.props.redirectToMenu(err.response.data.message);
-            });
         }
       });
     }
@@ -220,35 +189,6 @@ export default class ShoppingCart extends Component {
               />
             );
           })}
-        </div>
-      );
-
-    const Order_Confirm =
-      this.props.mode === "preorder" ? (
-        <div className="order-item-card__confirm-button-container">
-          <div
-            className="order-item__clear-button"
-            onClick={this.clearPreorderShoppingCart}
-          >
-            {this.props.app_conf.clear_localStorage}
-          </div>
-          <Link
-            to={`/table/public/confirm/${this.props.mode}`}
-            className="order-item-card__confirm-button"
-          >
-            {this.props.app_conf.confirm_order}
-          </Link>
-        </div>
-      ) : (
-        <div className="order-item-card__confirm-button-container">
-          <div
-            onClick={() => {
-              this.setState({ isShowConfirm: true });
-            }}
-            className="order-item-card__confirm-button"
-          >
-            {this.props.app_conf.confirm_order}
-          </div>
         </div>
       );
 

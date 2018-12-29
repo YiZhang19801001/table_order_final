@@ -1245,6 +1245,7 @@ body {
   color: #fff;
   font-weight: 600;
   font-size: 18px;
+  text-align: center;
 }
 
 .complete .complete__icon-container {

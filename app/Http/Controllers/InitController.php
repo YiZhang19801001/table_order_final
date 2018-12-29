@@ -47,7 +47,7 @@ class InitController extends Controller
     public function makeNewTableOrderUrl()
     {
         $tableId = "A02";
-        $orderId = "2149";
+        $orderId = "2151";
 
         $v = "abc";
 

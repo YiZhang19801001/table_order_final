@@ -8,7 +8,10 @@ export default class ChoiceGroup extends Component {
   }
 
   setChoice(e) {
-    this.props.updateOrderItemChoice(e.target.value, e.target.checked);
+    this.props.updateOrderItemChoice(
+      JSON.parse(e.target.value),
+      e.target.checked
+    );
   }
 
   render() {

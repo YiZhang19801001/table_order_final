@@ -21,8 +21,6 @@ export default class Order extends Component {
   }
 
   componentDidMount() {
-    //console.log(this.props.match.params);
-
     Axios.get(
       `/table/public/api/products/${localStorage.getItem(
         "aupos_language_code"
@@ -163,6 +161,7 @@ export default class Order extends Component {
           tableNumber={this.props.match.params.table}
           cdt={parsed.cdt}
           v={parsed.v}
+          lang={this.props.lang}
           redirectToMenu={this.redirectToMenu}
           userId={this.props.userId}
           updateHistoryCartList={this.props.updateHistoryCartList}

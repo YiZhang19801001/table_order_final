@@ -107,10 +107,10 @@ export default class OrderItemCard extends Component {
                           className="order-item-card__choices__pickedChoice"
                         >
                           <span className="order-item-card__choices__pickedChoice-name">
-                            {JSON.parse(pickedchoice).name}
+                            {pickedchoice.name}
                           </span>
                           <span className="order-item-card__choices__pickedChoice-price">
-                            ${JSON.parse(pickedchoice).price}
+                            ${pickedchoice.price}
                           </span>
                         </div>
                       );

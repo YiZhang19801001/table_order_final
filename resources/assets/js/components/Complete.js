@@ -25,11 +25,8 @@ export default class Complete extends Component {
           lang: 1
         })
           .then(res => {
-            console.log("call initCart, trigger by broadcast", res);
-            // this.setState({ shoppingCartList: res.data.pending_list });
             this.props.updateOrderList(res.data.pendingList);
             this.props.updateHistoryList(res.data.historyList);
-            // this.setState({ orderShoppingCartList: res.data.ordered_list });
           })
           .catch(err => {
             this.props.redirectToMenu(err.response.data.message);
