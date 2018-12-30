@@ -97,21 +97,18 @@ export default class ShoppingCart extends Component {
    * calculate the total amount of current shopping order
    */
   getOrderTotalPrice() {
-    if (
-      this.state.shoppingCartList.length > 0 ||
-      this.state.historyCartList.length > 0
-    ) {
-      let sum = 0;
+    let sum = 0;
+    if (this.state.shoppingCartList.length > 0) {
       this.state.shoppingCartList.forEach(orderItem => {
         sum += orderItem.item.price * orderItem.quantity;
       });
+    }
+    if (this.state.historyCartList.length > 0) {
       this.state.historyCartList.forEach(orderItem => {
         sum += orderItem.item.price * orderItem.quantity;
       });
-      return sum.toFixed(2);
-    } else {
-      return 0;
     }
+    return sum.toFixed(2);
   }
 
   clearPreorderShoppingCart() {
@@ -122,21 +119,18 @@ export default class ShoppingCart extends Component {
    * calculate the total quantity of current shopping order
    */
   getOrderTotalQuantity() {
-    if (
-      this.state.shoppingCartList.length > 0 ||
-      this.state.historyCartList.length > 0
-    ) {
-      let quantity = 0;
+    let quantity = 0;
+    if (this.state.shoppingCartList.length > 0) {
       this.state.shoppingCartList.forEach(orderItem => {
         quantity += orderItem.quantity;
       });
+    }
+    if (this.state.historyCartList.length > 0) {
       this.state.historyCartList.forEach(orderItem => {
         quantity += orderItem.quantity;
       });
-      return quantity;
-    } else {
-      return 0;
     }
+    return quantity;
   }
 
   /**
