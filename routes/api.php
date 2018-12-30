@@ -36,4 +36,4 @@ Route::post('mysql', 'MySqlController@index');
 
 Route::get('geturl', 'InitController@makeNewTableOrderUrl');
 
-Route::get('test', 'testController@changeConfigValue');
+Route::get('test/{mode}', 'testController@changeConfigValue');

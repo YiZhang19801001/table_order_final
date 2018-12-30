@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Category;
 use App\CategoryDescription;
 use App\OptionDescription;
 use App\OptionValueDescription;
@@ -11,7 +12,6 @@ use App\ProductDescription;
 use App\ProductExt;
 use App\ProductOptionValue;
 use App\ProductToCategory;
-use App\Category;
 
 class ProductController extends Controller
 {
@@ -26,7 +26,6 @@ class ProductController extends Controller
     {
         // clear mode do not need details [1], full detail mode need everything. [9]*/
         $mode = config("app.show_options");
-
         /** get all categories first */
         //this is the result
         $categories = array();
@@ -41,16 +40,14 @@ class ProductController extends Controller
             if ($category_in_db == null) {
                 $category_in_db = CategoryDescription::where('category_id', $category_id->category_id)->first();
             }
-			
-			if(Category::where('category_id',$category_id->category_id)->select('status')->first()->status==1)
-			{
-				$category["category_id"] = $category_in_db->category_id;
-				$category["name"] = $category_in_db->name;
 
-				array_push($categories, $category);
-			}
+            if (Category::where('category_id', $category_id->category_id)->select('status')->first()->status == 1) {
+                $category["category_id"] = $category_in_db->category_id;
+                $category["name"] = $category_in_db->name;
 
-            
+                array_push($categories, $category);
+            }
+
         }
 
         //declare an array to store the new [product_list(group by category)]
@@ -106,7 +103,7 @@ class ProductController extends Controller
                 //details only needed for show options mode
                 if ($mode == 9) {
                     $new_product["choices"] = $this->getChoicesHelper($target_product->product_id, $lang);
-                    $new_product["options"] = $this->getOptionsHelper($target_product->product_id, $lang);
+                    $new_product["options"] = [];
                 }
 
                 //save new product to certain group depending on category name
