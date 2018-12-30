@@ -70953,15 +70953,17 @@ var ChoiceForm = function (_Component) {
   _inherits(ChoiceForm, _Component);
 
   function ChoiceForm(props) {
+    var _this$state;
+
     _classCallCheck(this, ChoiceForm);
 
     var _this = _possibleConstructorReturn(this, (ChoiceForm.__proto__ || Object.getPrototypeOf(ChoiceForm)).call(this, props));
 
-    _this.state = _defineProperty({
+    _this.state = (_this$state = {
       pickedChoice: "",
       pickedOption: "",
       product: { choices: [] }
-    }, "pickedChoice", []);
+    }, _defineProperty(_this$state, "pickedChoice", []), _defineProperty(_this$state, "isListView", false), _this$state);
 
     _this.updateShoppingCartList = _this.updateShoppingCartList.bind(_this);
     _this.updateOrderItemChoice = _this.updateOrderItemChoice.bind(_this);
@@ -71064,6 +71066,24 @@ var ChoiceForm = function (_Component) {
                 "$",
                 this.state.product.price
               )
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              "div",
+              { className: "choice-form__view-button__container" },
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                "div",
+                { className: "choice-form__view-button" },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                  "i",
+                  {
+                    className: "material-icons",
+                    onClick: function onClick() {
+                      _this3.setState({ isListView: !_this3.state.isListView });
+                    }
+                  },
+                  this.state.isListView ? "view_module" : "view_list"
+                )
+              )
             )
           ),
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -71078,7 +71098,8 @@ var ChoiceForm = function (_Component) {
                   choiceGroup: choiceGroup,
                   updateOrderItemChoice: _this3.updateOrderItemChoice,
                   app_conf: _this3.props.app_conf,
-                  index: index
+                  index: index,
+                  isListView: _this3.state.isListView
                 });
               })
             )
@@ -71130,14 +71151,73 @@ var ChoiceGroup = function (_Component) {
 
     var _this = _possibleConstructorReturn(this, (ChoiceGroup.__proto__ || Object.getPrototypeOf(ChoiceGroup)).call(this, props));
 
+    _this.state = {
+      choiceClass: {
+        contentWrap: "",
+        checkMarkWrapper: "",
+        checkMark: "",
+        iconCover: "",
+        choiceInfo: ""
+      },
+      isListView: false
+    };
     _this.setChoice = _this.setChoice.bind(_this);
+    _this.toggleListView = _this.toggleListView.bind(_this);
     return _this;
   }
 
   _createClass(ChoiceGroup, [{
+    key: "componentWillMount",
+    value: function componentWillMount() {
+      this.setState({
+        choiceClass: {
+          contentWrapper: "choice-group__content-wrapper",
+          checkMarkWrap: "checkmark-wrap",
+          checkMark: "checkmark",
+          iconCover: "choice-group__icon-cover",
+          choiceInfo: "choice-group__choice-info"
+        },
+        isListView: this.props.isListView ? this.props.isListView : false
+      });
+    }
+  }, {
+    key: "componentWillReceiveProps",
+    value: function componentWillReceiveProps(newProps) {
+      this.setState({ isListView: newProps.isListView });
+
+      this.toggleListView();
+    }
+  }, {
     key: "setChoice",
     value: function setChoice(e) {
       this.props.updateOrderItemChoice(JSON.parse(e.target.value), e.target.checked);
+    }
+  }, {
+    key: "toggleListView",
+    value: function toggleListView() {
+      if (this.state.isListView === true) {
+        this.setState({
+          choiceClass: {
+            contentWrapper: "choice-group__content-wrapper",
+            checkMarkWrap: "checkmark-wrap",
+            checkMark: "checkmark",
+            iconCover: "choice-group__icon-cover",
+            choiceInfo: "choice-group__choice-info"
+          },
+          isListView: false
+        });
+      } else {
+        this.setState({
+          choiceClass: {
+            contentWrapper: "choice-group__content-wrapper-listview",
+            checkMarkWrap: "checkmark-wrap-listview",
+            checkMark: "checkmark-listview",
+            iconCover: "choice-group__icon-cover-listview",
+            choiceInfo: "choice-group__choice-info-listview"
+          },
+          isListView: true
+        });
+      }
     }
   }, {
     key: "render",
@@ -71150,7 +71230,7 @@ var ChoiceGroup = function (_Component) {
         { className: "choice-group" },
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           "div",
-          { className: "choice-group__title" },
+          { onClick: this.toggleListView, className: "choice-group__title" },
           this.props.choiceGroup.type
         ),
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -71166,7 +71246,7 @@ var ChoiceGroup = function (_Component) {
               "div",
               {
                 key: "choiceTag" + index,
-                className: "choice-group__content-wrapper"
+                className: _this2.state.choiceClass.contentWrapper
               },
               __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 "label",
@@ -71179,19 +71259,19 @@ var ChoiceGroup = function (_Component) {
                 }),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                   "span",
-                  { className: "checkmark-wrap" },
+                  { className: _this2.state.choiceClass.checkMarkWrap },
                   __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("span", {
-                    className: "checkmark",
+                    className: _this2.state.choiceClass.checkMark,
                     style: {
                       backgroundImage: "url(\"/table/public/images/items/" + choice.image + "\")"
                     }
                   }),
-                  __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("div", { className: "choice-group__icon-cover" })
+                  __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("div", { className: _this2.state.choiceClass.iconCover })
                 )
               ),
               __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 "span",
-                { className: "choice-group__choice-info" },
+                { className: _this2.state.choiceClass.choiceInfo },
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                   "span",
                   { className: "choice-group__choice-name" },

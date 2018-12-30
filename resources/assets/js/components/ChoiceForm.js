@@ -11,7 +11,8 @@ export default class ChoiceForm extends Component {
       pickedChoice: "",
       pickedOption: "",
       product: { choices: [] },
-      pickedChoice: []
+      pickedChoice: [],
+      isListView: false
     };
 
     this.updateShoppingCartList = this.updateShoppingCartList.bind(this);
@@ -95,6 +96,18 @@ export default class ChoiceForm extends Component {
                 ${this.state.product.price}
               </div>
             </div>
+            <div className="choice-form__view-button__container">
+              <div className="choice-form__view-button">
+                <i
+                  className="material-icons"
+                  onClick={() => {
+                    this.setState({ isListView: !this.state.isListView });
+                  }}
+                >
+                  {this.state.isListView ? "view_module" : "view_list"}
+                </i>
+              </div>
+            </div>
           </div>
           <div className="choice-form__list-container">
             <div className="choice-form__list-content">
@@ -106,6 +119,7 @@ export default class ChoiceForm extends Component {
                     updateOrderItemChoice={this.updateOrderItemChoice}
                     app_conf={this.props.app_conf}
                     index={index}
+                    isListView={this.state.isListView}
                   />
                 );
               })}

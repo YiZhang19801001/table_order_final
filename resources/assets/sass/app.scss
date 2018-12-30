@@ -368,6 +368,77 @@ body {
     flex-wrap: wrap;
     width: 90%;
     margin: 20px auto;
+    .choice-group__content-wrapper-listview {
+      width: 33%;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      .choice-group__content-container {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        flex: 1;
+        input {
+          position: absolute;
+          opacity: 0;
+        }
+        .checkmark-wrap-listview {
+          display: flex;
+          position: relative;
+          height: 20px;
+          width: 20px;
+          z-index: 1;
+          background-color: #fff;
+          border-radius: 50%;
+          border: 1px solid $cover;
+          overflow: hidden;
+          .checkmark-listview {
+            display: flex;
+            height: 64px;
+            width: 64px;
+            background-size: cover;
+            z-index: 2;
+            border-radius: 50%;
+            margin-top: 2px;
+            margin-left: 2px;
+            display: none;
+          }
+          .choice-group__icon-cover-listview {
+            position: absolute;
+            background-color: $cover;
+            height: 20px;
+            width: 20px;
+            z-index: 2;
+          }
+        }
+      }
+      /* When the checkbox is checked, add a blue background */
+      .choice-group__content-container
+        input:checked
+        ~ .checkmark-wrap-listview {
+        background-color: #eb4d4b;
+        .choice-group__icon-cover-listview {
+          opacity: 0;
+        }
+      }
+
+      .choice-group__choice-info-listview {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        flex: 2;
+        .choice-group__choice-price {
+          text-align: center;
+          font-size: 12px;
+          font-weight: 400;
+        }
+        .choice-group__choice-name {
+          text-align: center;
+          font-weight: 600;
+        }
+      }
+    }
     .choice-group__content-wrapper {
       width: 33%;
       margin-bottom: 8px;
