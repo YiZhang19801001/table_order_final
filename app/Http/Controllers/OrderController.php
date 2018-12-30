@@ -517,7 +517,8 @@ class OrderController extends Controller
 
         //update temp_order_item
         $returnHistoryList = $this->changeTempOrderItemsStatus($request->order_id, $request->orderList);
-       
+        broadcast(new UpdateOrder($request->order_id, null, $request->userId, 'update'));
+
         return response()->json(["historyList" => $this->extendsList($returnHistoryList,$request->lang)], 200);
 
     }

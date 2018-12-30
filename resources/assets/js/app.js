@@ -269,6 +269,7 @@ export default class App extends Component {
                 app_conf={this.state.app_conf}
                 mode={"preorder"}
                 lang={this.state.lang}
+                userId={this.state.userId}
                 {...props}
               />
             )}
@@ -285,6 +286,7 @@ export default class App extends Component {
                 originPath={this.state.originPath}
                 v={this.state.v}
                 lang={this.state.lang}
+                userId={this.state.userId}
                 {...props}
               />
             )}

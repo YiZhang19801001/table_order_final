@@ -32,6 +32,8 @@ Route::post('decrease', 'OrderController@decrease');
 Route::post('confirm', 'OrderController@confirmOrder');
 Route::post('test', 'HomeController@testBroadcast');
 Route::post('updateorderlist', 'OrderController@update');
-Route::post('mysql','MySqlController@index');
+Route::post('mysql', 'MySqlController@index');
 
-Route::get('geturl','InitController@makeNewTableOrderUrl');
+Route::get('geturl', 'InitController@makeNewTableOrderUrl');
+
+Route::get('test', 'testController@changeConfigValue');

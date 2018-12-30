@@ -31297,7 +31297,8 @@ var App = function (_Component) {
                 shoppingCartList: _this3.state.shoppingCartList,
                 app_conf: _this3.state.app_conf,
                 mode: "preorder",
-                lang: _this3.state.lang
+                lang: _this3.state.lang,
+                userId: _this3.state.userId
               }, props));
             }
           }),
@@ -31312,7 +31313,8 @@ var App = function (_Component) {
                 updateHistoryCartList: _this3.updateHistoryCartList,
                 originPath: _this3.state.originPath,
                 v: _this3.state.v,
-                lang: _this3.state.lang
+                lang: _this3.state.lang,
+                userId: _this3.state.userId
               }, props));
             }
           }),
@@ -71398,7 +71400,20 @@ var ShoppingCart = function (_Component) {
         Echo.channel("tableOrder").listen("UpdateOrder", function (e) {
           if (e.orderId == _this2.props.orderId && e.userId !== _this2.props.userId) {
             if (e.action == "update") {
-              confirm.log("update after someone confirm order");
+              __WEBPACK_IMPORTED_MODULE_2_axios___default.a.post("/table/public/api/initcart", {
+                order_id: _this2.props.orderId,
+                cdt: _this2.props.cdt,
+                v: _this2.props.v,
+                table_id: _this2.props.tableNumber,
+                lang: localStorage.getItem("aupos_language_code")
+              }).then(function (res) {
+                // this.setState({ shoppingCartList: res.data.pending_list });
+                _this2.props.updateOrderList(res.data.pendingList);
+                _this2.props.updateHistoryCartList(res.data.historyList);
+                // this.setState({ orderShoppingCartList: res.data.ordered_list });
+              }).catch(function (err) {
+                window.location.reload();
+              });
             } else {
               _this2.props.updateShoppingCartList(false, e.orderItem, "table", e.action, _this2.props.orderId, _this2.props.tableNumber);
             }
@@ -71457,7 +71472,6 @@ var ShoppingCart = function (_Component) {
           quantity += orderItem.quantity;
         });
       }
-      console.log(this.state.historyCartList);
 
       if (this.state.historyCartList.length > 0) {
         this.state.historyCartList.forEach(function (orderItem) {
@@ -71733,7 +71747,8 @@ var Confirm = function (_Component) {
         total: this.getTotalPrice(),
         paymentMethod: "Dive in",
         v: this.props.v,
-        lang: this.props.lang
+        lang: this.props.lang,
+        userId: this.props.userId
       }).then(function (res) {
         // res example: {"historyList":[{"item":{"product_id":5,"name":"\u9c8d\u9c7c\u571f\u9e21\u9505","price":"14.80","upc":"0105","description":null,"image":"default_product.jpg","choices":[{"type_id":9998,"type":"Option","choices":[{"product_ext_id":5195,"name":"\u8d70\u9c7c\u7247","price":"0.00","barcode":"E15","image":"default_taste.png"},{"product_ext_id":5108,"name":"\u7279\u9ebb","price":"0.00","barcode":"E06","image":"default_taste.png"},{"product_ext_id":5104,"name":"\u52a0\u9ebb","price":"0.00","barcode":"E02","image":"default_taste.png"},{"product_ext_id":5105,"name":"\u7279\u8fa3","price":"0.00","barcode":"E03","image":"default_taste.png"},{"product_ext_id":5194,"name":"\u8d70\u8471","price":"0.00","barcode":"E14","image":"default_taste.png"},{"product_ext_id":5103,"name":"\u52a0\u8fa3","price":"0.00","barcode":"E01","image":"default_taste.png"}],"pickedChoice":["{\"product_ext_id\":5108,\"name\":\"\u7279\u9ebb\",\"price\":\"0.00\",\"barcode\":\"E06\",\"image\":\"default_taste.png\"}","{\"product_ext_id\":5104,\"name\":\"\u52a0\u9ebb\",\"price\":\"0.00\",\"barcode\":\"E02\",\"image\":\"default_taste.png\"}"]}],"options":[]},"quantity":1}]}
 

@@ -74,7 +74,22 @@ export default class ShoppingCart extends Component {
       Echo.channel("tableOrder").listen("UpdateOrder", e => {
         if (e.orderId == this.props.orderId && e.userId !== this.props.userId) {
           if (e.action == "update") {
-            confirm.log("update after someone confirm order");
+            Axios.post(`/table/public/api/initcart`, {
+              order_id: this.props.orderId,
+              cdt: this.props.cdt,
+              v: this.props.v,
+              table_id: this.props.tableNumber,
+              lang: localStorage.getItem("aupos_language_code")
+            })
+              .then(res => {
+                // this.setState({ shoppingCartList: res.data.pending_list });
+                this.props.updateOrderList(res.data.pendingList);
+                this.props.updateHistoryCartList(res.data.historyList);
+                // this.setState({ orderShoppingCartList: res.data.ordered_list });
+              })
+              .catch(err => {
+                window.location.reload();
+              });
           } else {
             this.props.updateShoppingCartList(
               false,
@@ -132,7 +147,6 @@ export default class ShoppingCart extends Component {
         quantity += orderItem.quantity;
       });
     }
-    console.log(this.state.historyCartList);
 
     if (this.state.historyCartList.length > 0) {
       this.state.historyCartList.forEach(orderItem => {
