@@ -32,9 +32,10 @@ export default class ChoiceGroup extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    this.setState({ isListView: newProps.isListView });
-
-    this.toggleListView();
+    if (this.state.isListView !== newProps.isListView) {
+      this.setState({ isListView: newProps.isListView });
+      this.toggleListView();
+    }
   }
 
   setChoice(e) {
@@ -74,9 +75,7 @@ export default class ChoiceGroup extends Component {
     // const imgSrc = `url("/table/public/images/items/${this.props.imgSrc}")`;
     return (
       <div className="choice-group">
-        <div onClick={this.toggleListView} className="choice-group__title">
-          {this.props.choiceGroup.type}
-        </div>
+        <div className="choice-group__title">{this.props.choiceGroup.type}</div>
         <div className="choice-group__subtitle">
           {this.props.app_conf.choice_form_title}
         </div>

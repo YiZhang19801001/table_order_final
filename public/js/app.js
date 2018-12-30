@@ -71183,9 +71183,10 @@ var ChoiceGroup = function (_Component) {
   }, {
     key: "componentWillReceiveProps",
     value: function componentWillReceiveProps(newProps) {
-      this.setState({ isListView: newProps.isListView });
-
-      this.toggleListView();
+      if (this.state.isListView !== newProps.isListView) {
+        this.setState({ isListView: newProps.isListView });
+        this.toggleListView();
+      }
     }
   }, {
     key: "setChoice",
@@ -71230,7 +71231,7 @@ var ChoiceGroup = function (_Component) {
         { className: "choice-group" },
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           "div",
-          { onClick: this.toggleListView, className: "choice-group__title" },
+          { className: "choice-group__title" },
           this.props.choiceGroup.type
         ),
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -71346,16 +71347,21 @@ var ShoppingCart = function (_Component) {
     return _this;
   }
 
-  /**
-   * did mount method do fellowing tasks
-   * 1. set init state for shoppingCartIconImage and shoppingCartList
-   * 2. render shoppingCartList according to app mode [preorder/table]
-   * 3. update app.js.state.shoppingCartList by call [updateOrderList()]
-   * 4. set up channel if in table mode
-   */
-
-
   _createClass(ShoppingCart, [{
+    key: "componentWillMount",
+    value: function componentWillMount() {}
+    // console.log(this.state);
+
+
+    /**
+     * did mount method do fellowing tasks
+     * 1. set init state for shoppingCartIconImage and shoppingCartList
+     * 2. render shoppingCartList according to app mode [preorder/table]
+     * 3. update app.js.state.shoppingCartList by call [updateOrderList()]
+     * 4. set up channel if in table mode
+     */
+
+  }, {
     key: "componentDidMount",
     value: function componentDidMount() {
       var _this2 = this;
@@ -71404,9 +71410,12 @@ var ShoppingCart = function (_Component) {
     key: "componentWillReceiveProps",
     value: function componentWillReceiveProps(newProps) {
       this.setState({
-        shoppingCartList: newProps.shoppingCartList,
-        historyCartList: newProps.historyCartList
+        shoppingCartList: newProps.shoppingCartList
       });
+
+      if (this.props.mode === "table") {
+        this.setState({ historyCartList: newProps.historyCartList });
+      }
     }
 
     /**
@@ -71448,6 +71457,8 @@ var ShoppingCart = function (_Component) {
           quantity += orderItem.quantity;
         });
       }
+      console.log(this.state.historyCartList);
+
       if (this.state.historyCartList.length > 0) {
         this.state.historyCartList.forEach(function (orderItem) {
           quantity += orderItem.quantity;

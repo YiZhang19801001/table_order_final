@@ -25,6 +25,10 @@ export default class ShoppingCart extends Component {
     this.clearPreorderShoppingCart = this.clearPreorderShoppingCart.bind(this);
   }
 
+  componentWillMount() {
+    // console.log(this.state);
+  }
+
   /**
    * did mount method do fellowing tasks
    * 1. set init state for shoppingCartIconImage and shoppingCartList
@@ -88,9 +92,12 @@ export default class ShoppingCart extends Component {
 
   componentWillReceiveProps(newProps) {
     this.setState({
-      shoppingCartList: newProps.shoppingCartList,
-      historyCartList: newProps.historyCartList
+      shoppingCartList: newProps.shoppingCartList
     });
+
+    if (this.props.mode === "table") {
+      this.setState({ historyCartList: newProps.historyCartList });
+    }
   }
 
   /**
@@ -125,6 +132,8 @@ export default class ShoppingCart extends Component {
         quantity += orderItem.quantity;
       });
     }
+    console.log(this.state.historyCartList);
+
     if (this.state.historyCartList.length > 0) {
       this.state.historyCartList.forEach(orderItem => {
         quantity += orderItem.quantity;
