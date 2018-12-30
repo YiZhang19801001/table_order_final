@@ -71336,9 +71336,12 @@ var ShoppingCart = function (_Component) {
   }, {
     key: "getOrderTotalPrice",
     value: function getOrderTotalPrice() {
-      if (this.state.shoppingCartList.length > 0) {
+      if (this.state.shoppingCartList.length > 0 || this.state.historyCartList.length > 0) {
         var sum = 0;
         this.state.shoppingCartList.forEach(function (orderItem) {
+          sum += orderItem.item.price * orderItem.quantity;
+        });
+        this.state.historyCartList.forEach(function (orderItem) {
           sum += orderItem.item.price * orderItem.quantity;
         });
         return sum.toFixed(2);
@@ -71359,9 +71362,12 @@ var ShoppingCart = function (_Component) {
   }, {
     key: "getOrderTotalQuantity",
     value: function getOrderTotalQuantity() {
-      if (this.state.shoppingCartList.length > 0) {
+      if (this.state.shoppingCartList.length > 0 || this.state.historyCartList.length > 0) {
         var quantity = 0;
         this.state.shoppingCartList.forEach(function (orderItem) {
+          quantity += orderItem.quantity;
+        });
+        this.state.historyCartList.forEach(function (orderItem) {
           quantity += orderItem.quantity;
         });
         return quantity;
