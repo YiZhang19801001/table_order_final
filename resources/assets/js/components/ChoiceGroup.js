@@ -4,11 +4,71 @@ export default class ChoiceGroup extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      choiceClass: {
+        contentWrap: "",
+        checkMarkWrapper: "",
+        checkMark: "",
+        iconCover: "",
+        choiceInfo: ""
+      },
+      isListView: false
+    };
     this.setChoice = this.setChoice.bind(this);
+    this.toggleListView = this.toggleListView.bind(this);
+  }
+
+  componentWillMount() {
+    this.setState({
+      choiceClass: {
+        contentWrapper: "choice-group__content-wrapper",
+        checkMarkWrap: "checkmark-wrap",
+        checkMark: "checkmark",
+        iconCover: "choice-group__icon-cover",
+        choiceInfo: "choice-group__choice-info"
+      },
+      isListView: this.props.isListView ? this.props.isListView : false
+    });
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (this.state.isListView !== newProps.isListView) {
+      this.setState({ isListView: newProps.isListView });
+      this.toggleListView();
+    }
   }
 
   setChoice(e) {
-    this.props.updateOrderItemChoice(e.target.value, e.target.checked);
+    this.props.updateOrderItemChoice(
+      JSON.parse(e.target.value),
+      e.target.checked
+    );
+  }
+
+  toggleListView() {
+    if (this.state.isListView === true) {
+      this.setState({
+        choiceClass: {
+          contentWrapper: "choice-group__content-wrapper",
+          checkMarkWrap: "checkmark-wrap",
+          checkMark: "checkmark",
+          iconCover: "choice-group__icon-cover",
+          choiceInfo: "choice-group__choice-info"
+        },
+        isListView: false
+      });
+    } else {
+      this.setState({
+        choiceClass: {
+          contentWrapper: "choice-group__content-wrapper-listview",
+          checkMarkWrap: "checkmark-wrap-listview",
+          checkMark: "checkmark-listview",
+          iconCover: "choice-group__icon-cover-listview",
+          choiceInfo: "choice-group__choice-info-listview"
+        },
+        isListView: true
+      });
+    }
   }
 
   render() {
@@ -24,7 +84,7 @@ export default class ChoiceGroup extends Component {
             return (
               <div
                 key={`choiceTag${index}`}
-                className="choice-group__content-wrapper"
+                className={this.state.choiceClass.contentWrapper}
               >
                 <label className="choice-group__content-container">
                   <input
@@ -33,19 +93,19 @@ export default class ChoiceGroup extends Component {
                     value={JSON.stringify(choice)}
                     onChange={this.setChoice}
                   />
-                  <span className="checkmark-wrap">
+                  <span className={this.state.choiceClass.checkMarkWrap}>
                     <span
-                      className="checkmark"
+                      className={this.state.choiceClass.checkMark}
                       style={{
                         backgroundImage: `url("/table/public/images/items/${
                           choice.image
                         }")`
                       }}
                     />
-                    <div className="choice-group__icon-cover" />
+                    <div className={this.state.choiceClass.iconCover} />
                   </span>
                 </label>
-                <span className="choice-group__choice-info">
+                <span className={this.state.choiceClass.choiceInfo}>
                   <span className="choice-group__choice-name">
                     {choice.name}
                   </span>

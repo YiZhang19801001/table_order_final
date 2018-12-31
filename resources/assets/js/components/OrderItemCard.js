@@ -91,10 +91,6 @@ export default class OrderItemCard extends Component {
             {this.state.orderItem.item.name}
           </span>
           {this.state.orderItem.item.choices.map((choice, index) => {
-            const pickedChoiceInfo =
-              choice.pickedChoice !== null
-                ? JSON.parse(choice.pickedChoice)
-                : null;
             return (
               <div
                 className="order-item-card__choices"
@@ -103,16 +99,21 @@ export default class OrderItemCard extends Component {
                 <div className="order-item-card__choices__type">
                   {choice.type}
                 </div>
-                {pickedChoiceInfo !== null
-                  ? choice.pickedChoice.map(pickedchoice => {
-                      <div className="order-item-card__choices__pickedChoice">
-                        <span className="order-item-card__choices__pickedChoice-name">
-                          {pickedchoice.name}
-                        </span>
-                        <span className="order-item-card__choices__pickedChoice-price">
-                          ${pickedchoice.price}
-                        </span>
-                      </div>;
+                {choice.pickedChoice !== null
+                  ? choice.pickedChoice.map((pickedchoice, index) => {
+                      return (
+                        <div
+                          key={`decodePickedChoice${index}`}
+                          className="order-item-card__choices__pickedChoice"
+                        >
+                          <span className="order-item-card__choices__pickedChoice-name">
+                            {pickedchoice.name}
+                          </span>
+                          <span className="order-item-card__choices__pickedChoice-price">
+                            ${pickedchoice.price}
+                          </span>
+                        </div>
+                      );
                     })
                   : null}
               </div>

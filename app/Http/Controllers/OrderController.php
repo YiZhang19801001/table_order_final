@@ -22,6 +22,9 @@ use App\TempPickedOption;
 use DateTime;
 use DateTimeZone;
 use Illuminate\Http\Request;
+use App\ProductExt;
+
+
 
 class OrderController extends Controller
 {
@@ -149,61 +152,190 @@ class OrderController extends Controller
         }
         /**end validation */
 
-        $order = TempOrder::where('id', $request->order_id)->first();
-        if ($order === null) {
-            $order = new TempOrder;
-
-            $order["id"] = $request->order_id;
-            $order["table_number"] = $request->table_id;
-
-            $order["order_list_string"] = json_encode(['pendingList' => [], 'historyList' => []]);
-            $order->save();
-        }
-
-        return response()->json(json_decode($order->order_list_string));
+        $list = $this->fetchOrderListHelper($request->order_id,$request->table_id,$request->lang);
+        return response()->json($list);
     }
 
     public function fetchOrderListHelper($order_id, $table_id, $lang)
     {
 
-        /** step 1. check there is a temp order for this or not=> yes: fetch order details, no: create new Temp_order */
-        $order_to_table = TempOrder::where('id', $order_id)->where('table_number', $table_id)->first();
+        $order = TempOrder::where('id', $order_id)->first();
+        if ($order === null) {
+            $order = new TempOrder;
 
-        //call help method to CREATE NEW TEMP_ORDER
-        if ($order_to_table === null) {
-            $this->create($order_id, $table_id);
+            $order["id"] = $order_id;
+            $order["table_number"] = $table_id;
+
+            $order["order_list_string"] = json_encode(['pendingList' => [], 'historyList' => []]);
+            $order->save();
+
+            return array('pendingList' => [], 'historyList' => []);
+        }
+        else
+        {
+            $shortHistoryList = json_decode($order->order_list_string)->historyList;
+            $shortPendingList = json_decode($order->order_list_string)->pendingList;
+
+            return array('pendingList' => $this->extendsList($shortPendingList,$lang), 'historyList' => $this->extendsList($shortHistoryList,$lang));
+        }
+        
+    }
+    /**
+     * add details for the dried orderlist
+     * @param {array} $list ['product'=>int,'choices'=>array('type_id'=>int,'pickedChoice'=>array(int - product_ext_id)]
+     */
+
+    public function extendsList($list,$lang)
+    {
+        $newList = array();
+
+        foreach ($list as $ele) {
+            $ele->item = $this->getProduct($ele->item->product_id,$ele->item->choices,$lang);
+            array_push($newList,$ele);
         }
 
-        /**1. from 'order_id' fetching order_items
-         * 2. from 'order_item' table get 'product_id',
-         * according to those ids get details of products from product table
-         * 3. 22-nov-2018, add show history function
-         */
-        $order = []; //result container
-        $orderHistory = []; //result of history container
 
-        /** temp_order_items
-         * [id:int(10)][quantity:int(11)][product_id:int(11)][order_id:int(11)]
-         */
-        $arr_order_items_confirmed = TempOrderItem::where('order_id', $order_id)->where('quantity', '>', 0)->where('oc_order_id', '!=', null)->get();
+        return $newList;
+    }
 
-        if (count($arr_order_items_confirmed) > 0) {
-            foreach ($arr_order_items_confirmed as $key => $item) {
-                $linksub = OrderTableLinksub::where('order_id', $item['oc_order_id'])->first();
-                if ($linksub == null || $linksub->sub_status > 1) {
-                    unset($arr_order_items_confirmed[$key]);
+    public function getProduct($id,$choicesArr,$lang)
+    {
+        // clear mode do not need details [1], full detail mode need everything. [9]*/
+        $mode = config("app.show_options");
+
+        //select target product in DB
+        $target_product = ProductDescription::where('product_id', $id)->where('language_id', $lang)->first();
+        if ($target_product === null) {
+            $target_product = ProductDescription::where('product_id', $id)->first();
+        }
+        /** create price value*/
+        //fetch price first
+        $p = Product::where('product_id', $id)->first();
+        $price = $p["price"];
+        //cut after 2 digts decimal point, i.e 1.0000000 -> 1.00
+        $posOfdecimal = strpos($price, ".");
+        $length = $posOfdecimal + 3;
+        $price = substr($price, 0, $length);
+        /** end of create price value */
+
+        //create product code value
+        $upc = $p['upc'];
+
+        //map values to product
+        $new_product["product_id"] = $target_product->product_id;
+        $new_product["name"] = $target_product->name;
+        $new_product["price"] = $price;
+        $new_product["upc"] = $upc;
+        $new_product["description"] = $target_product->description;
+
+        $image_path = '/table/public/images/items/' . $p["image"];
+        $new_product["image"] = "";
+        if ($p["image"] === null || !file_exists($_SERVER['DOCUMENT_ROOT'] . $image_path)) {
+            $new_product["image"] = 'default_product.jpg';
+            // $new_product["image"] = '24.jpg';
+
+        } else {
+
+            $new_product["image"] = $p["image"];
+        }
+
+        //details only needed for show options mode
+        if ($mode == 9) {
+            $new_product["choices"] = $this->getChoicesHelper($id, $lang,$choicesArr);
+            $new_product["options"] = [];
+        }
+
+        return $new_product;
+    }
+
+    public function getChoicesHelper($id, $lang,$choicesArr)
+    {
+        /**this is the returning result */
+        $choices_groupby_type = array();
+
+        /** find out all types for certain product */
+        $typeIds_to_product = ProductExt::where('product_id', $id)->select('type')->distinct()->get(); //return array(obj)
+
+        //Fix Lang:
+        foreach ($typeIds_to_product as $typeId_to_product) {
+            $choices = array();
+            /**oc_product_add_type: [add_type_id:int] [name:string][type:bit][required:bit][checkbox:bit] */
+            $choice = ProductAddType::where('add_type_id', $typeId_to_product->type)->first();
+            /**oc_product_ext: [product_ext_id:int][product_id:int][type:int][name:string][price:float] */
+            $choices_to_type = ProductExt::where('product_id', $id)->where('type', $choice["add_type_id"])->get();
+
+
+            foreach ($choices_to_type as $choice_to_type) {
+                $choices_item["product_ext_id"] = $choice_to_type["product_ext_id"];
+                if ($lang == "1"||$lang===null) {
+                    $choices_item["name"] = $choice_to_type["name"];
+
+                } else{
+                    $choices_item["name"] = $choice_to_type["name_2"];
+
+                }
+                $choices_item["price"] = $choice_to_type["price"];
+                $choices_item["barcode"] = $choice_to_type["barcode"];
+                $image_path = '/table/public/images/items/' . $choice->image;
+                $choices_item["image"] = "";
+                if ($choice->image === null || !file_exists($_SERVER['DOCUMENT_ROOT'] . $image_path)) {
+                    $choices_item["image"] = 'default_taste.png';
+                    // $new_product["image"] = '24.jpg';
+
+                } else {
+
+                    $choices_item["image"] = $choice->image;
+                }
+
+
+
+                array_push($choices, $choices_item);
+            }
+
+            $pickChoicesInReturnItem = array();
+
+            if($choicesArr!==null)
+            {
+                foreach ($choicesArr as $choiceItem) {
+                    if($choiceItem->type_id==$typeId_to_product->type && $choiceItem->pickedChoice!==null)
+                    {
+                        foreach ($choiceItem->pickedChoice as $product_ext_id) {
+                            $dbRow = ProductExt::where('product_ext_id',$product_ext_id)->first();
+                            $pcWithDetails = array();
+                            $pcWithDetails['product_ext_id'] = $product_ext_id;
+                            if($lang==="1" || $lang===null)
+                            {
+                                $pcWithDetails['name'] = $dbRow['name'];
+                            }
+                            else
+                            {
+                                $pcWithDetails['name'] = $dbRow['name_2'];
+
+                            }
+
+                            $pcWithDetails['price'] = $dbRow['price'];
+                            $pcWithDetails['barcode'] = $dbRow['barcode'];
+                            $pcWithDetails["image"] = "default_taste.png";
+                         
+                            array_push($pickChoicesInReturnItem,$pcWithDetails);
+                        }
+                    }
                 }
             }
+
+            /**map value */
+            $new_choice["type_id"] = $typeId_to_product["type"];
+            $new_choice["type"] = $choice["name"];
+            $new_choice["choices"] = $choices;
+            $new_choice["pickedChoice"]=$pickChoicesInReturnItem;
+
+            array_push($choices_groupby_type, $new_choice);
         }
-        $orderHistory = $this->addDetailsForOrderListHelper($arr_order_items_confirmed, $lang);
 
-        $arr_order_items_pendding = TempOrderItem::where('order_id', $order_id)->where('quantity', '>', 0)->where('oc_order_id', null)->get();
-
-        $order = $this->addDetailsForOrderListHelper($arr_order_items_pendding, $lang);
-
-        return array('pending_list' => $order, 'ordered_list' => $orderHistory);
-
+        return $choices_groupby_type;
     }
+
+
 
     public function addDetailsForOrderListHelper($arr_order_items, $lang)
     {
@@ -282,25 +414,13 @@ class OrderController extends Controller
 
                 $productOptionList = [];
                 foreach ($pickedOptions as $pickOption) {
-                    /**get optionValues */
-                    /** option_id && product_id can found unique [product_option_value_id] [price] [option_value_id]
-                     * [option_value_name] ->use [option_value_id] find this from [oc_option_value_description]
-                     * [option_value_sort_order] ->use [option_value_id] find this from [oc_option_value]
-                     */
-
-                    //Todo: may need list of options
-                    // $optionValues = array();
-                    // foreach ($variable as $key => $value) {
-                    //     # code...
-                    // }
-
                     array_push($productOptionList, array(
                         "option_id" => $pickOption["option_id"],
                         "option_name" => $pickOption["option_name"],
                         "pickedOption" => $pickOption["pickedOption"],
                         "price" => $pickOption["price"],
                         "product_option_value_id" => $pickOption["product_option_value_id"],
-                        //"option_values"             =>$optionValues
+
                     ));
                 }
                 $new_orderList_ele["item"]["options"] = $productOptionList;
@@ -329,30 +449,6 @@ class OrderController extends Controller
 
     }
 
-    public function increase(Request $request)
-    {
-        $target_item = $request->orderItem;
-        $order_id = $request->orderId;
-        TempOrderItem::whereId($target_item["item"]["order_item_id"])->increment("quantity");
-
-        broadcast(new UpdateOrder($request->orderId));
-
-        return $target_item;
-    }
-
-    public function decrease(Request $request)
-    {
-        $target_item = $request->orderItem;
-        $order_id = $request->orderId;
-        TempOrderItem::whereId($target_item["item"]["order_item_id"])->decrement("quantity");
-        $num = TempOrderItem::where('id', $target_item["item"]["order_item_id"])->first();
-
-        if ($num["quantity"] == 0) {
-            TempOrderItem::whereId($target_item["item"]["order_item_id"])->delete();
-        }
-        broadcast(new UpdateOrder($request->orderId));
-        return $target_item;
-    }
 
     public function createOrderHelper($new_item, $orderId)
     {
@@ -415,14 +511,15 @@ class OrderController extends Controller
         //create record in oc_order_product
         $this->createOrderProductHelper($request->orderList, $order_id);
 
+        
         //create record in oc_table_linksub
         $this->createOrderLinkSubHelper($new_order, $request->v);
 
         //update temp_order_item
-        $returnHistoryListString = $this->changeTempOrderItemsStatus($request->order_id, $request->orderList);
+        $returnHistoryList = $this->changeTempOrderItemsStatus($request->order_id, $request->orderList);
+        broadcast(new UpdateOrder($request->order_id, null, $request->userId, 'update'));
 
-        broadcast(new ConfirmOrder($request->orderId));
-        return response()->json(["historyList" => json_decode($returnHistoryListString)], 200);
+        return response()->json(["historyList" => $this->extendsList($returnHistoryList,$request->lang)], 200);
 
     }
 
@@ -432,12 +529,16 @@ class OrderController extends Controller
         $order = TempOrder::where('id', $id)->first();
         $orderArr = json_decode($order->order_list_string);
         $orderHistoryListArr = $orderArr->historyList;
-        $orderArr->historyList = array_merge($orderHistoryListArr, $orderList);
+        $dryOrderList = [];
+        foreach ($orderList as $orderItem) {
+            array_push($dryOrderList,json_decode(json_encode(['item'=>$this->dryOrderItem($orderItem['item']),'quantity'=>$orderItem['quantity']])));
+        }
+        $orderArr->historyList = array_merge($orderHistoryListArr, $dryOrderList);
         $orderArr->pendingList = [];
         $order->order_list_string = json_encode($orderArr);
         $order->save();
 
-        return json_encode($orderArr->historyList);
+        return $orderArr->historyList;
     }
 
     public function createOrderLinkSubHelper($new_order, $v)
@@ -609,18 +710,20 @@ class OrderController extends Controller
             if (config('app.show_options')) {
                 /**picked choices */
                 foreach ($order_product["item"]["choices"] as $choice) {
-                    $new_order_ext = new OrderExt;
+                    
                     if($choice["pickedChoice"]!==null)
                     {
-                        // $pickedChoiceArray = json_decode($choice["pickedChoice"]);
-                        // foreach ($pickedChoiceArray as $pkc) {
-                        // }
-                        $pkc = json_decode($choice["pickedChoice"]);
-                        $new_order_ext->product_ext_id = $pkc->product_ext_id;
-                        $new_order_ext->order_product_id = $new_order_product->id;
-                        $new_order_ext->product_id = $order_product["item"]["product_id"];
-                        $new_order_ext->save();
+                    
+                        foreach ($choice["pickedChoice"] as $pickedChoice) {
+                            $new_order_ext = new OrderExt;
+                            $new_order_ext->product_ext_id = $pickedChoice["product_ext_id"];
+                            $new_order_ext->order_product_id = $new_order_product->id;
+                            $new_order_ext->product_id = $order_product["item"]["product_id"];
+                            $new_order_ext->save();
+                        }
+                       
                     }
+                
                     // else
                     // {
                     //     $new_order_ext->product_ext_id = 9999;
@@ -656,19 +759,35 @@ class OrderController extends Controller
         }
     }
 
+  public function dryOrderItem($new_item)
+    {
+
+        $new_item_choices = [];
+        foreach ($new_item['choices'] as $choicesItem) {
+            $pickedChoicesArray = [];
+            if ($choicesItem['pickedChoice'] !== null) {
+                foreach ($choicesItem['pickedChoice'] as $pickedChoicesItem) {
+                    array_push($pickedChoicesArray, $pickedChoicesItem['product_ext_id']);
+                }
+            }
+            array_push($new_item_choices, array(
+                'type_id' => $choicesItem['type_id'],
+                'pickedChoice' => $pickedChoicesArray,
+            ));
+        }
+        return array('product_id'=>$new_item['product_id'],'choices'=>$new_item_choices);
+    }
     public function update(Request $request)
     {
         broadcast(new UpdateOrder($request->orderId, $request->orderItem, $request->userId, $request->action));
-
         $mode = config('app.show_options');
-        $new_item = $request->orderItem;
+        $new_item = $this->dryOrderItem($request->orderItem);
         $orderRow = TempOrder::where('id', $request->orderId)->first();
-// if $order_list_string is null or empty add straight away
+        // if $order_list_string is null or empty add straight away
         if ($orderRow === null) {
             $orderRow = new TempOrder;
             $newOrderItem = ['item' => $new_item, 'quantity' => 1];
             $tempArr = array('pendingList' => [$newOrderItem], 'historyList' => []);
-
             $orderRow->order_list_string = json_encode($tempArr);
             $orderRow->id = $request->orderId;
             $orderRow->table_number = $request->tableId;
@@ -678,22 +797,22 @@ class OrderController extends Controller
             $orderArr = json_decode($order_list_string);
             $orderObject = $orderArr->pendingList;
             foreach ($orderObject as $orderItem) {
-                // return response()->json($orderItem);
+                
                 if ($orderItem->item->product_id === $new_item["product_id"]) {
                     $flag = true;
-                    if (count($orderItem->item->options) > 0) {
-                        for ($i = 0; $i < count($orderItem->item->options) - 1; $i++) {
-                            if ($orderItem->item->options[i]["pickedOption"] !== $new_item["options"][i]["pickedOption"]) {
-                                $flag = false;
-                                break;
-                            }
-                        }
-                    }
+                    // if (count($orderItem->item->options) > 0) {
+                    //     for ($i = 0; $i < count($orderItem->item->options) - 1; $i++) {
+                    //         if ($orderItem->item->options[i]["pickedOption"] !== $new_item["options"][i]["pickedOption"]) {
+                    //             $flag = false;
+                    //             break;
+                    //         }
+                    //     }
+                    // }
                     if ($flag === false || count($orderItem->item->choices) < 1) {
                         break;
                     } else {
-                        for ($i = 0; $i < count($orderItem->item->choices) - 1; $i++) {
-                            if ($orderItem->item->choices[i]["pickedChoice"] !== $new_item["choices"][i]["pickedChoice"]) {
+                        for ($i = 0; $i < count($orderItem->item->choices); $i++) {
+                            if ($orderItem->item->choices[$i]->pickedChoice != $new_item["choices"][$i]["pickedChoice"]) {
                                 $flag = false;
                                 break;
                             }
@@ -711,7 +830,6 @@ class OrderController extends Controller
                     }
                     $orderArr->pendingList = $orderObject;
                     $orderRow->order_list_string = json_encode($orderArr);
-
                     break;
                 }
             }
@@ -721,10 +839,7 @@ class OrderController extends Controller
                 $orderRow->order_list_string = json_encode($orderArr);
             }
         }
-
         $orderRow->save();
-        return response()->json(json_decode($orderRow->order_list_string));
-
     }
 
 }

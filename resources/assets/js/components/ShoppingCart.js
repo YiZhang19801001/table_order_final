@@ -25,6 +25,10 @@ export default class ShoppingCart extends Component {
     this.clearPreorderShoppingCart = this.clearPreorderShoppingCart.bind(this);
   }
 
+  componentWillMount() {
+    // console.log(this.state);
+  }
+
   /**
    * did mount method do fellowing tasks
    * 1. set init state for shoppingCartIconImage and shoppingCartList
@@ -41,13 +45,10 @@ export default class ShoppingCart extends Component {
 
     if (this.props.mode === "preorder") {
       if (localStorage.getItem("preorderList")) {
-        //console.log("read data from localstorage");
         this.setState({
           shoppingCartList: JSON.parse(localStorage.getItem("preorderList"))
         });
-        console.log(
-          "updateOrderList has been called from ShoppingCart Component"
-        );
+
         this.props.updateOrderList(
           JSON.parse(localStorage.getItem("preorderList"))
         );
@@ -58,7 +59,7 @@ export default class ShoppingCart extends Component {
         cdt: this.props.cdt,
         v: this.props.v,
         table_id: this.props.tableNumber,
-        lang: 1
+        lang: localStorage.getItem("aupos_language_code")
       })
         .then(res => {
           // this.setState({ shoppingCartList: res.data.pending_list });
@@ -73,7 +74,22 @@ export default class ShoppingCart extends Component {
       Echo.channel("tableOrder").listen("UpdateOrder", e => {
         if (e.orderId == this.props.orderId && e.userId !== this.props.userId) {
           if (e.action == "update") {
-            confirm.log("update after someone confirm order");
+            Axios.post(`/table/public/api/initcart`, {
+              order_id: this.props.orderId,
+              cdt: this.props.cdt,
+              v: this.props.v,
+              table_id: this.props.tableNumber,
+              lang: localStorage.getItem("aupos_language_code")
+            })
+              .then(res => {
+                // this.setState({ shoppingCartList: res.data.pending_list });
+                this.props.updateOrderList(res.data.pendingList);
+                this.props.updateHistoryCartList(res.data.historyList);
+                // this.setState({ orderShoppingCartList: res.data.ordered_list });
+              })
+              .catch(err => {
+                window.location.reload();
+              });
           } else {
             this.props.updateShoppingCartList(
               false,
@@ -86,57 +102,35 @@ export default class ShoppingCart extends Component {
           }
         }
       });
-
-      Echo.channel("tableOrder").listen("ConfirmOrder", e => {
-        console.log("confirm order event listened");
-
-        if (e.orderId == this.props.orderId) {
-          Axios.post(`/table/public/api/initcart`, {
-            order_id: this.props.orderId,
-            cdt: this.props.cdt,
-            v: this.props.v,
-            table_id: this.props.tableNumber,
-            lang: 1
-          })
-            .then(res => {
-              console.log("call initCart, trigger by broadcast", res);
-              // this.setState({ shoppingCartList: res.data.pending_list });
-              this.props.updateOrderList(res.data.pendingList);
-              this.props.updateHistoryList(res.data.historyList);
-              this.setState({
-                shoppingCartList: res.data.pendingList,
-                historyCartList: res.data.historyList
-              });
-              // this.setState({ orderShoppingCartList: res.data.ordered_list });
-            })
-            .catch(err => {
-              this.props.redirectToMenu(err.response.data.message);
-            });
-        }
-      });
     }
   }
 
   componentWillReceiveProps(newProps) {
     this.setState({
-      shoppingCartList: newProps.shoppingCartList,
-      historyCartList: newProps.historyCartList
+      shoppingCartList: newProps.shoppingCartList
     });
+
+    if (this.props.mode === "table") {
+      this.setState({ historyCartList: newProps.historyCartList });
+    }
   }
 
   /**
    * calculate the total amount of current shopping order
    */
   getOrderTotalPrice() {
+    let sum = 0;
     if (this.state.shoppingCartList.length > 0) {
-      let sum = 0;
       this.state.shoppingCartList.forEach(orderItem => {
         sum += orderItem.item.price * orderItem.quantity;
       });
-      return sum.toFixed(2);
-    } else {
-      return 0;
     }
+    if (this.state.historyCartList.length > 0) {
+      this.state.historyCartList.forEach(orderItem => {
+        sum += orderItem.item.price * orderItem.quantity;
+      });
+    }
+    return sum.toFixed(2);
   }
 
   clearPreorderShoppingCart() {
@@ -147,15 +141,19 @@ export default class ShoppingCart extends Component {
    * calculate the total quantity of current shopping order
    */
   getOrderTotalQuantity() {
+    let quantity = 0;
     if (this.state.shoppingCartList.length > 0) {
-      let quantity = 0;
       this.state.shoppingCartList.forEach(orderItem => {
         quantity += orderItem.quantity;
       });
-      return quantity;
-    } else {
-      return 0;
     }
+
+    if (this.state.historyCartList.length > 0) {
+      this.state.historyCartList.forEach(orderItem => {
+        quantity += orderItem.quantity;
+      });
+    }
+    return quantity;
   }
 
   /**
@@ -223,29 +221,6 @@ export default class ShoppingCart extends Component {
         </div>
       );
 
-    const Order_Confirm =
-      this.props.mode === "preorder" ? (
-        <div className="order-item-card__confirm-button-container">
-          <div
-            className="order-item__clear-button"
-            onClick={this.clearPreorderShoppingCart}
-          >
-            {this.props.app_conf.clear_localStorage}
-          </div>
-        </div>
-      ) : (
-        <div className="order-item-card__confirm-button-container">
-          <div
-            onClick={() => {
-              this.setState({ isShowConfirm: true });
-            }}
-            className="order-item-card__confirm-button"
-          >
-            {this.props.app_conf.confirm_order}
-          </div>
-        </div>
-      );
-
     return (
       <div>
         {this.state.isShowConfirm ? (
@@ -295,9 +270,17 @@ export default class ShoppingCart extends Component {
           </div>
 
           {this.state.expand ? Order_List : null}
-          {/* {this.state.expand ? Order_Confirm : null} */}
+
           {this.state.expand ? (
             <div className="order-item-card__confirm-button-container">
+              {this.props.mode === "preorder" ? (
+                <div
+                  className="order-item__clear-button"
+                  onClick={this.clearPreorderShoppingCart}
+                >
+                  {this.props.app_conf.clear_localStorage}
+                </div>
+              ) : null}
               <Link
                 to={
                   this.props.mode === "preorder"
