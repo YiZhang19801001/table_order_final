@@ -13862,7 +13862,7 @@ module.exports = QRMath;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(127);
-module.exports = __webpack_require__(303);
+module.exports = __webpack_require__(304);
 
 
 /***/ }),
@@ -13883,6 +13883,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_Menu__ = __webpack_require__(300);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_Complete__ = __webpack_require__(301);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__components_MySql__ = __webpack_require__(302);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__components_Setting__ = __webpack_require__(303);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -13908,6 +13909,7 @@ __webpack_require__(128);
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
+
 
 
 
@@ -13952,8 +13954,8 @@ var App = function (_Component) {
   }
 
   _createClass(App, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
+    key: "componentWillMount",
+    value: function componentWillMount() {
       var _this2 = this;
 
       var lang = 1;
@@ -13969,7 +13971,10 @@ var App = function (_Component) {
           userId: res.data.userId
         });
       });
-
+    }
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
       if (localStorage.getItem("aupos_time_stamp")) {
         var today = new Date();
         var date = "" + today.getFullYear() + (today.getMonth() + 1) + today.getDate();
@@ -14052,73 +14057,6 @@ var App = function (_Component) {
       this.setState({ shoppingCartList: resultArr });
 
       this.refreshStateShoppingCartList(isCallApi, mode, action, item, orderId, tableId, resultArr);
-      /*
-      for (let i = 0; i < this.state.shoppingCartList.length; i++) {
-        if (this.state.shoppingCartList[i].item.product_id === item.product_id) {
-          flag = true;
-          if (this.state.shoppingCartList[i].item.options.length > 0) {
-            for (
-              let a = 0;
-              a < this.state.shoppingCartList[i].item.options.length;
-              a++
-            ) {
-              const option = this.state.shoppingCartList[i].item.options[a];
-              const new_option = item.options[a];
-              if (option.pickedOption !== new_option) {
-                flag = false;
-                break;
-              }
-            }
-          }
-            if (
-            flag === false ||
-            this.state.shoppingCartList[i].item.choices.length < 1
-          ) {
-            break;
-          } else {
-            for (
-              let b = 0;
-              b < this.state.shoppingCartList[i].item.choices.length;
-              b++
-            ) {
-              const choice = this.state.shoppingCartList[i].item.choices[b];
-              const new_choice = item.choices[b];
-              if (choice.pickedChoice !== new_choice.pickedChoice) {
-                flag = false;
-                break;
-              }
-            }
-          }
-        }
-        if (flag) {
-          if (action == "add") {
-            this.state.shoppingCartList[i].quantity++;
-          } else if (action == "sub") {
-            if (this.state.shoppingCartList[i].quantity > 1) {
-              this.state.shoppingCartList[i].quantity--;
-            } else {
-              this.state.shoppingCartList.splice(i, 1);
-            }
-          }
-            this.refreshStateShoppingCartList(
-            isCallApi,
-            mode,
-            action,
-            item,
-            orderId,
-            tableId
-          );
-            break;
-        }
-      }
-      // if product_id not exist add new
-      if (!flag && action === "add") {
-        this.state.shoppingCartList.push({
-          item: item,
-          quantity: 1
-        });
-       }
-      */
     }
   }, {
     key: "setV",
@@ -14169,18 +14107,12 @@ var App = function (_Component) {
   }, {
     key: "refreshStateShoppingCartList",
     value: function refreshStateShoppingCartList(isCallApi, mode, action, item, orderId, tableId, resultArr) {
-      // console.log("refresh is call api: ", isCallApi);
-      // console.log("refresh mode: ", mode);
-      // console.log("refresh item: ", item);
-      // console.log("refresh order id: ", orderId);
       if (mode === "preorder") {
-        // console.log(this.state.shoppingCartList);
         localStorage.setItem("preorderList", JSON.stringify(resultArr));
         var today = new Date();
         var date = "" + today.getFullYear() + (today.getMonth() + 1) + today.getDate();
         localStorage.setItem("aupos_time_stamp", date);
       } else if (mode === "table" && isCallApi === true) {
-        //console.log(this.state.userId);
         __WEBPACK_IMPORTED_MODULE_3_axios___default.a.post("/table/public/api/updateorderlist", {
           action: action,
           orderItem: item,
@@ -14285,6 +14217,13 @@ var App = function (_Component) {
             path: "/table/public/mysql",
             render: function render(props) {
               return __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_8__components_MySql__["a" /* default */], props);
+            }
+          }),
+          __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2_react_router_dom__["c" /* Route */], {
+            exact: true,
+            path: "/table/public/mycon",
+            render: function render(props) {
+              return __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_9__components_Setting__["a" /* default */], _extends({ app_conf: _this3.state.app_conf }, props));
             }
           }),
           __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2_react_router_dom__["c" /* Route */], {
@@ -73510,6 +73449,151 @@ var MySql = function (_Component) {
 
 /***/ }),
 /* 303 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_axios__ = __webpack_require__(18);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_axios__);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
+
+
+var Setting = function (_Component) {
+  _inherits(Setting, _Component);
+
+  function Setting(props) {
+    _classCallCheck(this, Setting);
+
+    var _this = _possibleConstructorReturn(this, (Setting.__proto__ || Object.getPrototypeOf(Setting)).call(this, props));
+
+    _this.state = { theme: "" };
+
+    _this.setChoice = _this.setChoice.bind(_this);
+    _this.apply = _this.apply.bind(_this);
+    return _this;
+  }
+
+  _createClass(Setting, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      if (this.props.app_conf) {
+        this.setState({
+          theme: this.props.app_conf.default_theme ? this.props.app_conf.default_theme : "light"
+        });
+      }
+    }
+  }, {
+    key: "setChoice",
+    value: function setChoice(e) {
+      this.setState({ theme: e.target.value });
+    }
+  }, {
+    key: "apply",
+    value: function apply() {
+      __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get("/table/public/api/test/" + this.state.theme).then(function (res) {
+        console.log(res.data);
+      });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        "div",
+        { className: "setting" },
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+          "div",
+          { className: "setting__sub-header" },
+          this.props.app_conf.setting_theme
+        ),
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+          "div",
+          { className: "setting__choice-pannel" },
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            "div",
+            { className: "theme-setting-item" },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              "label",
+              { className: "theme-setting-container" },
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", {
+                type: "checkbox",
+                name: "theme",
+                value: "light",
+                onChange: this.setChoice
+              }),
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                "span",
+                { className: "checkmark-wrap" },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("div", { className: "choice-group__icon-cover" })
+              )
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              "span",
+              { className: "choice-group__choice-info" },
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                "span",
+                { className: "theme-setting-name" },
+                "light"
+              )
+            )
+          )
+        ),
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+          "div",
+          { className: "setting__choice-pannel" },
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            "div",
+            { className: "theme-setting-item" },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              "label",
+              { className: "theme-setting-container" },
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", {
+                type: "checkbox",
+                name: "theme",
+                value: "dark",
+                onChange: this.setChoice
+              }),
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                "span",
+                { className: "checkmark-wrap" },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("div", { className: "choice-group__icon-cover" })
+              )
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              "span",
+              { className: "choice-group__choice-info" },
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                "span",
+                { className: "theme-setting-name" },
+                "dark"
+              )
+            )
+          )
+        ),
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+          "div",
+          { className: "apply-button", onClick: this.apply },
+          "Apply"
+        )
+      );
+    }
+  }]);
+
+  return Setting;
+}(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
+
+/* harmony default export */ __webpack_exports__["a"] = (Setting);
+
+/***/ }),
+/* 304 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

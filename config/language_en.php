@@ -47,5 +47,7 @@ return [
     // title for error page
     'menu' => 'Menu',
     // clear shopping cart at preorder mode
-    'clear_localStorage'=>'clear cart'
+    'clear_localStorage'=>'clear cart',
+    //
+    'setting_theme'=>"Theme"
 ];

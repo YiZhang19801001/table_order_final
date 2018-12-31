@@ -22,6 +22,7 @@ import Confirm from "./components/Confirm";
 import Menu from "./components/Menu";
 import Complete from "./components/Complete";
 import MySql from "./components/MySql";
+import Setting from "./components/Setting";
 
 export default class App extends Component {
   constructor(props) {
@@ -51,7 +52,7 @@ export default class App extends Component {
     this.clearPreorderShoppingCart = this.clearPreorderShoppingCart.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
     let lang = 1;
     if (localStorage.getItem("aupos_language_code")) {
       lang = localStorage.getItem("aupos_language_code");
@@ -65,7 +66,8 @@ export default class App extends Component {
         userId: res.data.userId
       });
     });
-
+  }
+  componentDidMount() {
     if (localStorage.getItem("aupos_time_stamp")) {
       const today = new Date();
       const date = `${today.getFullYear()}${today.getMonth() +
@@ -149,77 +151,6 @@ export default class App extends Component {
       tableId,
       resultArr
     );
-    /*
-    for (let i = 0; i < this.state.shoppingCartList.length; i++) {
-      if (this.state.shoppingCartList[i].item.product_id === item.product_id) {
-        flag = true;
-        if (this.state.shoppingCartList[i].item.options.length > 0) {
-          for (
-            let a = 0;
-            a < this.state.shoppingCartList[i].item.options.length;
-            a++
-          ) {
-            const option = this.state.shoppingCartList[i].item.options[a];
-            const new_option = item.options[a];
-            if (option.pickedOption !== new_option) {
-              flag = false;
-              break;
-            }
-          }
-        }
-
-        if (
-          flag === false ||
-          this.state.shoppingCartList[i].item.choices.length < 1
-        ) {
-          break;
-        } else {
-          for (
-            let b = 0;
-            b < this.state.shoppingCartList[i].item.choices.length;
-            b++
-          ) {
-            const choice = this.state.shoppingCartList[i].item.choices[b];
-            const new_choice = item.choices[b];
-            if (choice.pickedChoice !== new_choice.pickedChoice) {
-              flag = false;
-              break;
-            }
-          }
-        }
-      }
-      if (flag) {
-        if (action == "add") {
-          this.state.shoppingCartList[i].quantity++;
-        } else if (action == "sub") {
-          if (this.state.shoppingCartList[i].quantity > 1) {
-            this.state.shoppingCartList[i].quantity--;
-          } else {
-            this.state.shoppingCartList.splice(i, 1);
-          }
-        }
-
-        this.refreshStateShoppingCartList(
-          isCallApi,
-          mode,
-          action,
-          item,
-          orderId,
-          tableId
-        );
-
-        break;
-      }
-    }
-    // if product_id not exist add new
-    if (!flag && action === "add") {
-      this.state.shoppingCartList.push({
-        item: item,
-        quantity: 1
-      });
-
-   }
-    */
   }
   setV(v) {
     this.setState({ v: v });
@@ -266,19 +197,13 @@ export default class App extends Component {
     tableId,
     resultArr
   ) {
-    // console.log("refresh is call api: ", isCallApi);
-    // console.log("refresh mode: ", mode);
-    // console.log("refresh item: ", item);
-    // console.log("refresh order id: ", orderId);
     if (mode === "preorder") {
-      // console.log(this.state.shoppingCartList);
       localStorage.setItem("preorderList", JSON.stringify(resultArr));
       const today = new Date();
       const date = `${today.getFullYear()}${today.getMonth() +
         1}${today.getDate()}`;
       localStorage.setItem("aupos_time_stamp", date);
     } else if (mode === "table" && isCallApi === true) {
-      //console.log(this.state.userId);
       Axios.post("/table/public/api/updateorderlist", {
         action: action,
         orderItem: item,
@@ -381,6 +306,13 @@ export default class App extends Component {
             exact
             path="/table/public/mysql"
             render={props => <MySql {...props} />}
+          />
+          <Route
+            exact
+            path="/table/public/mycon"
+            render={props => (
+              <Setting app_conf={this.state.app_conf} {...props} />
+            )}
           />
           <Route
             exact

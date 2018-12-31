@@ -48,5 +48,7 @@ return [
     'menu' => '菜单',
     // clear shopping cart
     'clear_localStorage' => '清空购物车',
+    //
+    'setting_theme'=>"主题"
 
 ];
