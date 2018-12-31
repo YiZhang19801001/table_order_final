@@ -73657,7 +73657,7 @@ var Setting = function (_Component) {
     key: "apply",
     value: function apply() {
       __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get("/table/public/api/test/" + this.state.theme).then(function (res) {
-        console.log(res.data);
+        alert(res.data);
       });
     }
   }, {
@@ -73681,7 +73681,7 @@ var Setting = function (_Component) {
               "label",
               { className: "theme-setting-container" },
               __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", {
-                type: "checkbox",
+                type: "radio",
                 name: "theme",
                 value: "light",
                 onChange: this.setChoice
@@ -73713,7 +73713,7 @@ var Setting = function (_Component) {
               "label",
               { className: "theme-setting-container" },
               __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", {
-                type: "checkbox",
+                type: "radio",
                 name: "theme",
                 value: "dark",
                 onChange: this.setChoice

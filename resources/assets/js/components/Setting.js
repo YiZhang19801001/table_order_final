@@ -27,7 +27,7 @@ export default class Setting extends Component {
 
   apply() {
     Axios.get(`/table/public/api/test/${this.state.theme}`).then(res => {
-      console.log(res.data);
+      alert(res.data);
     });
   }
 
@@ -41,7 +41,7 @@ export default class Setting extends Component {
           <div className="theme-setting-item">
             <label className="theme-setting-container">
               <input
-                type="checkbox"
+                type="radio"
                 name="theme"
                 value="light"
                 onChange={this.setChoice}
@@ -59,7 +59,7 @@ export default class Setting extends Component {
           <div className="theme-setting-item">
             <label className="theme-setting-container">
               <input
-                type="checkbox"
+                type="radio"
                 name="theme"
                 value="dark"
                 onChange={this.setChoice}
