@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\CategoryDescription;
 use App\Category;
+use App\CategoryDescription;
 
 class CategoryController extends Controller
 {
@@ -28,13 +28,12 @@ class CategoryController extends Controller
             if ($category_in_db == null) {
                 $category_in_db = CategoryDescription::where('category_id', $category_id->category_id)->first();
             }
-			if(Category::where('category_id',$category_id->category_id)->select('status')->first()->status==1)
-			{
-				$category["category_id"] = $category_in_db->category_id;
-				$category["name"] = $category_in_db->name;
+            if (Category::where('category_id', $category_id->category_id)->select('status')->first()->status == 1) {
+                $category["category_id"] = $category_in_db->category_id;
+                $category["name"] = $category_in_db->name;
 
-				array_push($categories, $category);
-			}
+                array_push($categories, $category);
+            }
         }
 
         //return

@@ -54,6 +54,11 @@ export default class Setting extends Component {
               <span className="theme-setting-name">light</span>
             </span>
           </div>
+          <img
+            src="/table/public/images/layout/theme_light.jpg"
+            className="theme_pic"
+            alt="light theme"
+          />
         </div>
         <div className="setting__choice-pannel">
           <div className="theme-setting-item">
@@ -72,6 +77,11 @@ export default class Setting extends Component {
               <span className="theme-setting-name">dark</span>
             </span>
           </div>
+          <img
+            src="/table/public/images/layout/theme_light.jpg"
+            className="theme_pic"
+            alt="dark theme"
+          />
         </div>
         <div className="apply-button" onClick={this.apply}>
           Apply
