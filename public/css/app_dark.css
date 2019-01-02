@@ -1613,3 +1613,31 @@ input:checked
   border-radius: 5px;
 }
 
+.button-increase.fill .material-icons,
+.button-decrease.fill .material-icons {
+  background-color: #ffba2d;
+  font-size: 16px;
+  border-radius: 50%;
+}
+
+.button-increase.fill.disable .material-icons,
+.button-decrease.fill.disable .material-icons {
+  background-color: #979797;
+  font-size: 16px;
+  border-radius: 50%;
+}
+
+.button-increase.outline,
+.button-decrease.outline {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.button-increase.outline .material-icons,
+.button-decrease.outline .material-icons {
+  background-color: #ffba2d;
+  font-size: 16px;
+  border-radius: 50%;
+}
+

@@ -816,7 +816,7 @@ input:checked
   font-weight: 600;
   text-decoration: none;
   background-color: #f55747;
-  color: #444444;
+  color: white;
 }
 
 .shopping-cart .order-item-card__confirm-button-container .order-item-card__confirm-button {
@@ -1599,5 +1599,36 @@ input:checked
   margin: 20px auto;
   text-align: center;
   border-radius: 5px;
+}
+
+.button-increase.fill .material-icons,
+.button-decrease.fill .material-icons {
+  background-color: #f55747;
+  font-size: 16px;
+  border-radius: 50%;
+  color: white;
+}
+
+.button-increase.fill.disable .material-icons,
+.button-decrease.fill.disable .material-icons {
+  background-color: #979797;
+  font-size: 16px;
+  border-radius: 50%;
+  color: white;
+}
+
+.button-increase.outline,
+.button-decrease.outline {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.button-increase.outline .material-icons,
+.button-decrease.outline .material-icons {
+  background-color: #f55747;
+  font-size: 16px;
+  border-radius: 50%;
+  color: white;
 }
 

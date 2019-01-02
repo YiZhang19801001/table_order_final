@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 
 import ChoiceForm from "./ChoiceForm";
+import ButtonIncrease from "./ButtonIncrease";
+import ButtonDecrease from "./ButtonDecrease";
 
 export default class ProductCard extends Component {
   constructor(props) {
@@ -116,14 +118,14 @@ export default class ProductCard extends Component {
             onClick={isSimpleProduct ? this.decrease : null}
             className="btn-sub"
           >
-            <img src={this.state.btnSub} alt="-" />
+            <ButtonDecrease mode="fill" isDisable={true} />
           </div>
           <span className="number-quantity">{this.state.quantity}</span>
           <div
             onClick={isSimpleProduct ? this.increase : this.makeChoice}
             className="btn-plus"
           >
-            <img src={this.state.btnPlus} alt="+" />
+            <ButtonIncrease mode="fill" />
           </div>
         </div>
       ) : (
@@ -132,7 +134,7 @@ export default class ProductCard extends Component {
             onClick={isSimpleProduct ? this.increase : this.makeChoice}
             className="btn-plus-only"
           >
-            <img src={this.state.btnPlus} alt="+" />
+            <ButtonIncrease mode="fill" />
           </div>
         </div>
       );

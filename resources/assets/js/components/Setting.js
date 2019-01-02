@@ -78,7 +78,7 @@ export default class Setting extends Component {
             </span>
           </div>
           <img
-            src="/table/public/images/layout/theme_light.jpg"
+            src="/table/public/images/layout/theme_dark.png"
             className="theme_pic"
             alt="dark theme"
           />

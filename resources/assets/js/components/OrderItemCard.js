@@ -1,5 +1,8 @@
 import React, { Component } from "react";
 
+import ButtonIncrease from "./ButtonIncrease";
+import ButtonDecrease from "./ButtonDecrease";
+
 export default class OrderItemCard extends Component {
   constructor(props) {
     super(props);
@@ -57,7 +60,7 @@ export default class OrderItemCard extends Component {
             onClick={this.decrease}
             className="order-item-card__quantity-control__decrease"
           >
-            <img src="/table/public/images/layout/btn_sub_white.png" alt="" />
+            <ButtonDecrease mode="outline" />
           </span>
           <span className="order-item-card__quantity-control__quantity">
             {this.state.orderItem.quantity}
@@ -66,7 +69,7 @@ export default class OrderItemCard extends Component {
             onClick={this.increase}
             className="order-item-card__quantity-control__increase"
           >
-            <img src="/table/public/images/layout/btn_plus_white.png" alt="" />
+            <ButtonIncrease mode="outline" />
           </span>
         </div>
       ) : (
