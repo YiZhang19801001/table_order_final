@@ -73735,21 +73735,37 @@ var Setting = function (_Component) {
 
     var _this = _possibleConstructorReturn(this, (Setting.__proto__ || Object.getPrototypeOf(Setting)).call(this, props));
 
-    _this.state = { theme: "" };
+    _this.state = {
+      theme: "",
+      preorderTitleCn: _this.props.app_conf.preorder_title,
+      preorderTitleEn: _this.props.app_conf.preorder_title
+    };
 
     _this.setChoice = _this.setChoice.bind(_this);
     _this.apply = _this.apply.bind(_this);
+    _this.handlepreorderTitleEnChange = _this.handlepreorderTitleEnChange.bind(_this);
+    _this.handlepreorderTitleCnChange = _this.handlepreorderTitleCnChange.bind(_this);
+    _this.applyText = _this.applyText.bind(_this);
     return _this;
   }
 
   _createClass(Setting, [{
     key: "componentDidMount",
     value: function componentDidMount() {
+      console.log(this.props);
       if (this.props.app_conf) {
         this.setState({
           theme: this.props.app_conf.default_theme ? this.props.app_conf.default_theme : "light"
         });
       }
+    }
+  }, {
+    key: "componentWillReceiveProps",
+    value: function componentWillReceiveProps(newProps) {
+      this.setState({
+        preorderTitleCn: newProps.app_conf.preorder_title,
+        preorderTitleEn: newProps.app_conf.preorder_title
+      });
     }
   }, {
     key: "setChoice",
@@ -73760,6 +73776,28 @@ var Setting = function (_Component) {
     key: "apply",
     value: function apply() {
       __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get("/table/public/api/test/" + this.state.theme).then(function (res) {
+        alert(res.data);
+      });
+    }
+  }, {
+    key: "handlepreorderTitleCnChange",
+    value: function handlepreorderTitleCnChange(e) {
+      this.setState({ preorderTitleCn: e.target.value });
+    }
+  }, {
+    key: "handlepreorderTitleEnChange",
+    value: function handlepreorderTitleEnChange(e) {
+      this.setState({ preorderTitleEn: e.target.value });
+    }
+  }, {
+    key: "applyText",
+    value: function applyText() {
+      var cn = this.state.preorderTitleCn;
+      var en = this.state.preorderTitleEn;
+      __WEBPACK_IMPORTED_MODULE_1_axios___default.a.post("/table/public/api/language", {
+        preorder_title_cn: cn,
+        preorder_title_en: en
+      }).then(function (res) {
         alert(res.data);
       });
     }
@@ -73851,7 +73889,42 @@ var Setting = function (_Component) {
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           "div",
           { className: "apply-button", onClick: this.apply },
-          "Apply"
+          "Apply Theme"
+        ),
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+          "div",
+          { className: "mysql" },
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            "div",
+            { className: "mysql-field" },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              "label",
+              { className: "mysql-field__label", name: "preorderTitleCn" },
+              "preorder title(cn):"
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", {
+              className: "mysql-field__input",
+              type: "text",
+              value: this.state.preorderTitleCn,
+              onChange: this.handlepreorderTitleCnChange
+            }),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              "label",
+              { className: "mysql-field__label", name: "preorderTitleEn" },
+              "preorder title(en):"
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", {
+              className: "mysql-field__input",
+              type: "text",
+              value: this.state.preorderTitleEn,
+              onChange: this.handlepreorderTitleEnChange
+            })
+          )
+        ),
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+          "div",
+          { className: "apply-button", onClick: this.applyText },
+          "Apply Text"
         )
       );
     }

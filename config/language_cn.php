@@ -29,11 +29,11 @@ return [
 //small label in the payment view footer section
     'order' => '单号',
 //shopping cart confirm order button text
-    'confirm_order' => "确认下单",
+    'confirm_order' => '确认下单',
 // orderedLabel - show on shopping list for the items already confirmed
-    'order_label' => "已下单",
+    'order_label' => '已下单',
 // pre-order mode on display title
-    'preorder_title' => "预点单",
+    'preorder_title' => '预点单',
 // pre-order confirm page title text
     'preorder_confirm_text' => '恭喜您已下单成功',
 // subtitle tips under qr code
@@ -49,6 +49,6 @@ return [
     // clear shopping cart
     'clear_localStorage' => '清空购物车',
     //
-    'setting_theme'=>"主题"
+    'setting_theme' => '主题',
 
 ];

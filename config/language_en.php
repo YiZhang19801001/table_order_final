@@ -29,9 +29,9 @@ return [
 //small label in the payment view footer section
     'order' => 'order',
 //shopping cart confirm order button text
-    'confirm_order' => "Confirm Order",
+    'confirm_order' => 'Confirm Order',
 // orderedLabel - show on shopping list for the items already confirmed
-    'order_label' => "ordered",
+    'order_label' => 'ordered',
 // preorder mode title
     'preorder_title' => 'pre-order',
 // preorder confirm page header text
@@ -47,7 +47,7 @@ return [
     // title for error page
     'menu' => 'Menu',
     // clear shopping cart at preorder mode
-    'clear_localStorage'=>'clear cart',
+    'clear_localStorage' => 'clear cart',
     //
-    'setting_theme'=>"Theme"
+    'setting_theme' => 'Theme',
 ];
