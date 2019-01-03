@@ -7,8 +7,8 @@ export default class Setting extends Component {
 
     this.state = {
       theme: "",
-      preorderTitleCn: this.props.app_conf.preorder_title,
-      preorderTitleEn: this.props.app_conf.preorder_title
+      preorderTitleCn: "",
+      preorderTitleEn: ""
     };
 
     this.setChoice = this.setChoice.bind(this);
@@ -22,8 +22,15 @@ export default class Setting extends Component {
     this.applyText = this.applyText.bind(this);
   }
 
+  componentWillMount() {
+    Axios.get("/table/public/api/init/1").then(res => {
+      this.setState({ preorderTitleCn: res.data.app_conf.preorder_title });
+    });
+    Axios.get("/table/public/api/init/2").then(res => {
+      this.setState({ preorderTitleEn: res.data.app_conf.preorder_title });
+    });
+  }
   componentDidMount() {
-    console.log(this.props);
     if (this.props.app_conf) {
       this.setState({
         theme: this.props.app_conf.default_theme
@@ -32,20 +39,13 @@ export default class Setting extends Component {
       });
     }
   }
-
-  componentWillReceiveProps(newProps) {
-    this.setState({
-      preorderTitleCn: newProps.app_conf.preorder_title,
-      preorderTitleEn: newProps.app_conf.preorder_title
-    });
-  }
   setChoice(e) {
     this.setState({ theme: e.target.value });
   }
 
   apply() {
     Axios.get(`/table/public/api/test/${this.state.theme}`).then(res => {
-      alert(res.data);
+      alert(res.data.message);
     });
   }
 
@@ -64,7 +64,7 @@ export default class Setting extends Component {
       preorder_title_cn: cn,
       preorder_title_en: en
     }).then(res => {
-      alert(res.data);
+      alert(res.data.message);
     });
   }
 

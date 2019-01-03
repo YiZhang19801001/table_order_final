@@ -73737,8 +73737,8 @@ var Setting = function (_Component) {
 
     _this.state = {
       theme: "",
-      preorderTitleCn: _this.props.app_conf.preorder_title,
-      preorderTitleEn: _this.props.app_conf.preorder_title
+      preorderTitleCn: "",
+      preorderTitleEn: ""
     };
 
     _this.setChoice = _this.setChoice.bind(_this);
@@ -73750,22 +73750,25 @@ var Setting = function (_Component) {
   }
 
   _createClass(Setting, [{
+    key: "componentWillMount",
+    value: function componentWillMount() {
+      var _this2 = this;
+
+      __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get("/table/public/api/init/1").then(function (res) {
+        _this2.setState({ preorderTitleCn: res.data.app_conf.preorder_title });
+      });
+      __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get("/table/public/api/init/2").then(function (res) {
+        _this2.setState({ preorderTitleEn: res.data.app_conf.preorder_title });
+      });
+    }
+  }, {
     key: "componentDidMount",
     value: function componentDidMount() {
-      console.log(this.props);
       if (this.props.app_conf) {
         this.setState({
           theme: this.props.app_conf.default_theme ? this.props.app_conf.default_theme : "light"
         });
       }
-    }
-  }, {
-    key: "componentWillReceiveProps",
-    value: function componentWillReceiveProps(newProps) {
-      this.setState({
-        preorderTitleCn: newProps.app_conf.preorder_title,
-        preorderTitleEn: newProps.app_conf.preorder_title
-      });
     }
   }, {
     key: "setChoice",
@@ -73776,7 +73779,7 @@ var Setting = function (_Component) {
     key: "apply",
     value: function apply() {
       __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get("/table/public/api/test/" + this.state.theme).then(function (res) {
-        alert(res.data);
+        alert(res.data.message);
       });
     }
   }, {
@@ -73798,7 +73801,7 @@ var Setting = function (_Component) {
         preorder_title_cn: cn,
         preorder_title_en: en
       }).then(function (res) {
-        alert(res.data);
+        alert(res.data.message);
       });
     }
   }, {

@@ -33,7 +33,7 @@ return [
 // orderedLabel - show on shopping list for the items already confirmed
     'order_label' => 'ordered',
 // preorder mode title
-    'preorder_title' => 'pre-order',
+    'preorder_title' => 'pre--order',
 // preorder confirm page header text
     'preorder_confirm_text' => 'your order saved',
 // subtitle tips under qr code

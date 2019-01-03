@@ -23,7 +23,7 @@ class testController extends Controller
         // $value = file_get_contents($path);
 
         /**return to client side */
-        return response()->json('theme changed to ' . $mode . ' !', 200);
+        return response()->json(['message' => 'theme changed to ' . $mode . ' !'], 200);
     }
 
     public function changeText(Request $request)
@@ -46,10 +46,8 @@ class testController extends Controller
             )
         );
 
-        $language_cn = file_get_contents($path_cn);
-        $language_en = file_get_contents($path_en);
-        // $language_cn = \Config::get('language_cn');
-        // $language_en = \Config::get('language_en');
-        return response()->json(compact('language_cn', 'language_en'));
+        $language_cn = \Config::get('language_cn.preorder_title');
+        $language_en = \Config::get('language_en.preorder_title');
+        return response()->json(['message' => "perorder title change to [cn:$language_cn,en:$language_en]"]);
     }
 }
