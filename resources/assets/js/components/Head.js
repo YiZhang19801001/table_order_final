@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 
+import Axios from "axios";
+
 export default class Head extends Component {
   constructor(props) {
     super(props);
@@ -7,13 +9,38 @@ export default class Head extends Component {
   }
 
   changeLanguage() {
-    const lang = localStorage.getItem("aupos_language_code");
-    if (lang === "1") {
-      localStorage.setItem("aupos_language_code", 2);
-    } else {
-      localStorage.setItem("aupos_language_code", 1);
+    if (this.props.mode === "table") {
+      const lang = localStorage.getItem("aupos_language_code");
+      if (lang === "1") {
+        localStorage.setItem("aupos_language_code", 2);
+      } else {
+        localStorage.setItem("aupos_language_code", 1);
+      }
+      window.location.reload();
+    } else if (this.props.mode === "preorder") {
+      const lang = localStorage.getItem("aupos_language_code");
+      if (lang === "1") {
+        localStorage.setItem("aupos_language_code", 2);
+      } else {
+        localStorage.setItem("aupos_language_code", 1);
+      }
+
+      if (
+        localStorage.getItem("preorderList") &&
+        localStorage.getItem("preorderList").length > 0
+      ) {
+        Axios.post("/table/public/api/translate", {
+          orderList: JSON.parse(localStorage.getItem("preorderList")),
+          lang: localStorage.getItem("aupos_language_code")
+        }).then(res => {
+          localStorage.setItem(
+            "preorderList",
+            JSON.stringify(res.data.orderList)
+          );
+          window.location.reload();
+        });
+      }
     }
-    window.location.reload();
   }
 
   render() {

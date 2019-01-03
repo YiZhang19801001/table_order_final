@@ -92,6 +92,7 @@ export default class Order extends Component {
           originPath={`${this.props.location.pathname}${
             this.props.location.search
           }`}
+          mode={this.props.mode}
         />
         <div className="main">
           <div className="category-list">
