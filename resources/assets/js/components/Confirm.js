@@ -106,9 +106,6 @@ export default class Confirm extends Component {
       userId: this.props.userId
     })
       .then(res => {
-        // res example: {"historyList":[{"item":{"product_id":5,"name":"\u9c8d\u9c7c\u571f\u9e21\u9505","price":"14.80","upc":"0105","description":null,"image":"default_product.jpg","choices":[{"type_id":9998,"type":"Option","choices":[{"product_ext_id":5195,"name":"\u8d70\u9c7c\u7247","price":"0.00","barcode":"E15","image":"default_taste.png"},{"product_ext_id":5108,"name":"\u7279\u9ebb","price":"0.00","barcode":"E06","image":"default_taste.png"},{"product_ext_id":5104,"name":"\u52a0\u9ebb","price":"0.00","barcode":"E02","image":"default_taste.png"},{"product_ext_id":5105,"name":"\u7279\u8fa3","price":"0.00","barcode":"E03","image":"default_taste.png"},{"product_ext_id":5194,"name":"\u8d70\u8471","price":"0.00","barcode":"E14","image":"default_taste.png"},{"product_ext_id":5103,"name":"\u52a0\u8fa3","price":"0.00","barcode":"E01","image":"default_taste.png"}],"pickedChoice":["{\"product_ext_id\":5108,\"name\":\"\u7279\u9ebb\",\"price\":\"0.00\",\"barcode\":\"E06\",\"image\":\"default_taste.png\"}","{\"product_ext_id\":5104,\"name\":\"\u52a0\u9ebb\",\"price\":\"0.00\",\"barcode\":\"E02\",\"image\":\"default_taste.png\"}"]}],"options":[]},"quantity":1}]}
-
-        // todo:: set it to app.state
         this.props.updateHistoryCartList(res.data.historyList);
         this.props.history.push(
           `/table/public/complete/${this.props.match.params.tableId}/${
@@ -160,11 +157,11 @@ export default class Confirm extends Component {
                   onClick={() => {
                     this.setState({ isShowConfirm: false });
                   }}
-                  className="cancel-button"
+                  className="confirm-button"
                 >
                   {this.props.app_conf.continue_order}
                 </div>
-                <div onClick={this.confirmOrder} className="confirm-button">
+                <div onClick={this.confirmOrder} className="cancel-button">
                   {this.props.app_conf.confirm_order}
                 </div>
               </div>
