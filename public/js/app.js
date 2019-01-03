@@ -60804,7 +60804,7 @@ var warning = __webpack_require__(1);
 
 var ReactComponentTreeHook;
 
-if (typeof process !== 'undefined' && Object({"MIX_APP_LAN":"1","MIX_PUSHER_APP_CLUSTER":"ap1","MIX_PUSHER_APP_KEY":"da53128c54079c5c7c40","MIX_SHOW_OPTIONS":"false","NODE_ENV":"development"}) && "development" === 'test') {
+if (typeof process !== 'undefined' && Object({"MIX_APP_LAN":"","MIX_PUSHER_APP_CLUSTER":"ap1","MIX_PUSHER_APP_KEY":"da53128c54079c5c7c40","MIX_SHOW_OPTIONS":"false","NODE_ENV":"development"}) && "development" === 'test') {
   // Temporary hack.
   // Inline requires don't work well with Jest:
   // https://github.com/facebook/react/issues/7240
@@ -62719,7 +62719,7 @@ var warning = __webpack_require__(1);
 
 var ReactComponentTreeHook;
 
-if (typeof process !== 'undefined' && Object({"MIX_APP_LAN":"1","MIX_PUSHER_APP_CLUSTER":"ap1","MIX_PUSHER_APP_KEY":"da53128c54079c5c7c40","MIX_SHOW_OPTIONS":"false","NODE_ENV":"development"}) && "development" === 'test') {
+if (typeof process !== 'undefined' && Object({"MIX_APP_LAN":"","MIX_PUSHER_APP_CLUSTER":"ap1","MIX_PUSHER_APP_KEY":"da53128c54079c5c7c40","MIX_SHOW_OPTIONS":"false","NODE_ENV":"development"}) && "development" === 'test') {
   // Temporary hack.
   // Inline requires don't work well with Jest:
   // https://github.com/facebook/react/issues/7240
@@ -63779,7 +63779,7 @@ var warning = __webpack_require__(1);
 
 var ReactComponentTreeHook;
 
-if (typeof process !== 'undefined' && Object({"MIX_APP_LAN":"1","MIX_PUSHER_APP_CLUSTER":"ap1","MIX_PUSHER_APP_KEY":"da53128c54079c5c7c40","MIX_SHOW_OPTIONS":"false","NODE_ENV":"development"}) && "development" === 'test') {
+if (typeof process !== 'undefined' && Object({"MIX_APP_LAN":"","MIX_PUSHER_APP_CLUSTER":"ap1","MIX_PUSHER_APP_KEY":"da53128c54079c5c7c40","MIX_SHOW_OPTIONS":"false","NODE_ENV":"development"}) && "development" === 'test') {
   // Temporary hack.
   // Inline requires don't work well with Jest:
   // https://github.com/facebook/react/issues/7240
@@ -63986,7 +63986,7 @@ var warning = __webpack_require__(1);
 
 var ReactComponentTreeHook;
 
-if (typeof process !== 'undefined' && Object({"MIX_APP_LAN":"1","MIX_PUSHER_APP_CLUSTER":"ap1","MIX_PUSHER_APP_KEY":"da53128c54079c5c7c40","MIX_SHOW_OPTIONS":"false","NODE_ENV":"development"}) && "development" === 'test') {
+if (typeof process !== 'undefined' && Object({"MIX_APP_LAN":"","MIX_PUSHER_APP_CLUSTER":"ap1","MIX_PUSHER_APP_KEY":"da53128c54079c5c7c40","MIX_SHOW_OPTIONS":"false","NODE_ENV":"development"}) && "development" === 'test') {
   // Temporary hack.
   // Inline requires don't work well with Jest:
   // https://github.com/facebook/react/issues/7240
@@ -71104,7 +71104,7 @@ var ChoiceForm = function (_Component) {
       pickedChoice: "",
       pickedOption: "",
       product: { choices: [] }
-    }, _defineProperty(_this$state, "pickedChoice", []), _defineProperty(_this$state, "isListView", false), _this$state);
+    }, _defineProperty(_this$state, "pickedChoice", []), _defineProperty(_this$state, "isListView", true), _this$state);
 
     _this.updateShoppingCartList = _this.updateShoppingCartList.bind(_this);
     _this.updateOrderItemChoice = _this.updateOrderItemChoice.bind(_this);
@@ -71300,7 +71300,7 @@ var ChoiceGroup = function (_Component) {
         iconCover: "",
         choiceInfo: ""
       },
-      isListView: false
+      isListView: true
     };
     _this.setChoice = _this.setChoice.bind(_this);
     _this.toggleListView = _this.toggleListView.bind(_this);
@@ -71312,13 +71312,13 @@ var ChoiceGroup = function (_Component) {
     value: function componentWillMount() {
       this.setState({
         choiceClass: {
-          contentWrapper: "choice-group__content-wrapper",
-          checkMarkWrap: "checkmark-wrap",
-          checkMark: "checkmark",
-          iconCover: "choice-group__icon-cover",
-          choiceInfo: "choice-group__choice-info"
+          contentWrapper: "choice-group__content-wrapper-listview",
+          checkMarkWrap: "checkmark-wrap-listview",
+          checkMark: "checkmark-listview",
+          iconCover: "choice-group__icon-cover-listview",
+          choiceInfo: "choice-group__choice-info-listview"
         },
-        isListView: this.props.isListView ? this.props.isListView : false
+        isListView: this.props.isListView ? this.props.isListView : true
       });
     }
   }, {

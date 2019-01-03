@@ -12,7 +12,7 @@ export default class ChoiceGroup extends Component {
         iconCover: "",
         choiceInfo: ""
       },
-      isListView: false
+      isListView: true
     };
     this.setChoice = this.setChoice.bind(this);
     this.toggleListView = this.toggleListView.bind(this);
@@ -21,13 +21,13 @@ export default class ChoiceGroup extends Component {
   componentWillMount() {
     this.setState({
       choiceClass: {
-        contentWrapper: "choice-group__content-wrapper",
-        checkMarkWrap: "checkmark-wrap",
-        checkMark: "checkmark",
-        iconCover: "choice-group__icon-cover",
-        choiceInfo: "choice-group__choice-info"
+        contentWrapper: "choice-group__content-wrapper-listview",
+        checkMarkWrap: "checkmark-wrap-listview",
+        checkMark: "checkmark-listview",
+        iconCover: "choice-group__icon-cover-listview",
+        choiceInfo: "choice-group__choice-info-listview"
       },
-      isListView: this.props.isListView ? this.props.isListView : false
+      isListView: this.props.isListView ? this.props.isListView : true
     });
   }
 

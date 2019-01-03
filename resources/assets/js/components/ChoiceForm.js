@@ -12,7 +12,7 @@ export default class ChoiceForm extends Component {
       pickedOption: "",
       product: { choices: [] },
       pickedChoice: [],
-      isListView: false
+      isListView: true
     };
 
     this.updateShoppingCartList = this.updateShoppingCartList.bind(this);
