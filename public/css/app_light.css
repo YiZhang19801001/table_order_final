@@ -1775,3 +1775,24 @@ body {
   border-radius: 50%;
   color: white;
 }
+
+.complete__button-wrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.complete__button-wrapper .complete__button-back {
+  padding: 10px 30px;
+  background-color: #ffba2d;
+  border-radius: 5px;
+  color: white;
+  font-weight: 600;
+}

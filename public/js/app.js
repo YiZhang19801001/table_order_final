@@ -30794,7 +30794,7 @@ var Head = function (_Component) {
   _createClass(Head, [{
     key: "changeLanguage",
     value: function changeLanguage() {
-      if (this.props.mode === "table") {
+      if (this.props.mode === "table" || localStorage.getItem("preorderList") && localStorage.getItem("preorderList").length == 0 || !localStorage.getItem("preorderList")) {
         var lang = localStorage.getItem("aupos_language_code");
         if (lang === "1") {
           localStorage.setItem("aupos_language_code", 2);
@@ -73528,6 +73528,15 @@ var Complete = function (_Component) {
             "div",
             { className: "complete__icon-text" },
             this.props.app_conf.preorder_confirm_text
+          ),
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            "div",
+            { className: "complete__button-wrapper" },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              "div",
+              { onClick: this.backToOrder, className: "complete__button-back" },
+              this.props.app_conf.continue_order
+            )
           )
         ),
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(

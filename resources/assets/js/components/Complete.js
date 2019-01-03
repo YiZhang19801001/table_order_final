@@ -55,6 +55,12 @@ export default class Complete extends Component {
           <div className="complete__icon-text">
             {this.props.app_conf.preorder_confirm_text}
           </div>
+
+          <div className="complete__button-wrapper">
+            <div onClick={this.backToOrder} className="complete__button-back">
+              {this.props.app_conf.continue_order}
+            </div>
+          </div>
         </div>
         <div className="complete__order-list-title">
           <div className="complete__order-list-title-text">

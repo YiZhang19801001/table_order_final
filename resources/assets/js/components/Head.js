@@ -9,7 +9,12 @@ export default class Head extends Component {
   }
 
   changeLanguage() {
-    if (this.props.mode === "table") {
+    if (
+      this.props.mode === "table" ||
+      (localStorage.getItem("preorderList") &&
+        localStorage.getItem("preorderList").length == 0) ||
+      !localStorage.getItem("preorderList")
+    ) {
       const lang = localStorage.getItem("aupos_language_code");
       if (lang === "1") {
         localStorage.setItem("aupos_language_code", 2);
